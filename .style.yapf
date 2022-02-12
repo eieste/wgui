@@ -1,0 +1,6 @@
+[style]
+column_limit = 140
+based_on_style = google
+split_before_first_argument = true
+
+allow_split_before_dict_value = false

@@ -1,0 +1,223 @@
+name: Communication IO Monitoroing
+on: push
+
+
+jobs:
+
+  test-precommit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository code"
+        uses: "actions/checkout@v2"
+
+      - name: "Setup Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+
+      - name: "Setup venv"
+        run: |
+          pip3 install virtualenv
+          virtualenv venv
+          source venv/bin/activate
+
+      - name: "Install Packages"
+        run: |
+          pip3 freeze
+          python3 setup.py build
+          python3 setup.py install
+          pip3 install -r requirements-dev.txt
+          pre-commit run --all-files
+
+  test-pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository code"
+        uses: "actions/checkout@v2"
+
+      - name: "Setup Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+
+      - name: "Setup venv"
+        run: |
+          pip3 install virtualenv
+          virtualenv venv
+          source venv/bin/activate
+
+      - name: "Install Packages"
+        run: |
+          pip3 freeze
+          python3 setup.py build
+          python3 setup.py install
+
+      - name: "Install Devtools"
+        run: |
+          pip3 install -r requirements-dev.txt
+
+      - name: Run test suite
+        run: |
+          pytest --cov-report xml:coverage.xml --cov=comiomon .
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          if-no-files-found: error
+          path: |
+            coverage.xml
+
+  test-codecov:
+    needs:
+      - test-pytest
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Download a single artifact"
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-report
+
+      - name: Coverage
+        uses: codecov/codecov-action@v2
+        with:
+          file: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+
+  test-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v2"
+
+      - name: "Setup Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+
+      - name: "Install Packages"
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          python3 setup.py build
+          python3 setup.py install
+          pip3 install -r requirements.txt
+          pip3 install -r requirements-dev.txt
+          npm install -g snyk
+          snyk test --sarif-file-output=snyk.sarif
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/python-3.8@master
+        continue-on-error: true # To make sure that SARIF upload gets called
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk.sarif
+
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
+
+  test-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository code"
+        uses: "actions/checkout@v2"
+
+      - name: "Setup Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+
+      - name: "Install Devtools"
+        run: |
+          pip3 install mdformat mdformat-gfm
+
+      - name: Run test suite
+        run: |
+          mdformat --check README.md
+
+  demo-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository code"
+        uses: "actions/checkout@v2"
+
+      - name: "Setup Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+
+      - name: "Setup venv"
+        run: |
+          pip3 install virtualenv
+          virtualenv venv
+          source venv/bin/activate
+
+      - name: "Install Packages"
+        run: |
+          python3 setup.py build
+          python3 setup.py sdist
+
+      - name: "Install Package"
+        run: |
+          python3 setup.py install
+
+      - name: "Install Package"
+        run: |
+          comiomon -v
+
+  pkg-pypi:
+    needs:
+      - test-precommit
+      - test-codecov
+      - test-markdown
+      - demo-setup
+    runs-on: "ubuntu-latest"
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: "Checkout repository code"
+        uses: "actions/checkout@v2"
+
+      - name: "Setup Nodejs"
+        uses: "actions/setup-node@v2"
+        with:
+          node-version: '16'
+
+      - name: "Install SemanticRelease"
+        run: |
+          npm install semantic-release @semantic-release/changelog @semantic-release/exec @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/changelog @semantic-release/git 
+          npx semantic-release
+
+      - name: "Setup Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+
+      - name: "Setup venv"
+        run: |
+          pip3 install virtualenv
+          virtualenv venv
+          source venv/bin/activate
+
+      - name: "Install Packages"
+        run: |
+          pip3 freeze
+          python3 setup.py build
+          python3 setup.py sdist
+
+      - name: "Install Devtools"
+        run: |
+          pip3 install -r requirements-dev.txt
+          pip3 install twine
+
+      - name: "Upload twine"
+        run: |
+          python3 -m twine upload --verbose \
+          --non-interactive --repository comiomon \
+          --repository-url ${{ secrets.TWINE_REPOSITORY_URL }} \
+          --username ${{ secrets.TWINE_USERNAME }} \
+          --password ${{ secrets.TWINE_PASSWORD }} dist/*
+          
+

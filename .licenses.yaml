@@ -1,0 +1,42 @@
+---
+allowed:
+  - Academic Free License
+  - Apache( Software)?( License)?( Version)?( 2.0)?
+  - Artistic License
+  - (New )?(3-Clause )?BSD( [0-9] Clause)?( License)?
+  - Count  License
+  - GNU Lesser General Public License v[0-9]
+  - LGPL( [0-9]+)?
+  - MPL( 2.0)?
+  - Historical Permission Notice and Disclaimer
+  - HPND
+  - ISC( License)?
+  - (The )?MIT( License)?
+  - Mozilla Public License 2.0
+  - Public Domain
+  - Python Software Foundation License
+  - PSFL?
+  - (https?://)?www.apache.org/licenses/LICENSE-2.0
+  - (https?://)?www.gnu.org/licenses/lgpl.html
+disallowed:
+  - .*[^L]GPL.*
+  - GNU General Public License.*
+ignored:
+  - autoflake
+  - pylint
+  - pylint-celery
+  - pylint-django
+  - psycopg2 # LGPL with modifications
+  - python-dateutil # dual license Apache BSD
+  - odfpy # It is distributed under both GNU General Public License v.2 or (at your option) any later version or APACHE License v.2. See GPL-LICENSE-2.txt and APACHE-LICENSE-2.0.txt. THIS IS BAD.
+missing:
+  mock: BSD 2-Clause
+  pypdf2: BSD License
+  django-simple-history: BSD 3-Clause
+  django-ordered-model: BSD License
+  django-allauth: MIT License
+  cobble: BSD 2-Clause
+  importlib-resources: Apache License, Version 2.0
+  prompt-toolkit: BSD 3-Clause
+  python3-openid: Apache-2.0 License
+  zipp: MIT License
