@@ -19,7 +19,7 @@ setup(
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    install_requires=["jsonschema==4.4.0", "pyyaml==6.0"],
+    install_requires=["jsonschema==4.4.0", "pyyaml==6.0", "Jinja2==3.0.3"],
     package_data={'': ['conf/wgui.schema.json']},
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
