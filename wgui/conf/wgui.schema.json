@@ -1,1 +1,55 @@
-
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://json-schema.org/draft/2019-09/schema",
+  "title": "WG-UI",
+  "description": "Wireguard Configuration UI",
+  "type": "object",
+  "properties": {
+    "config": {
+      "description": "Configuration Item",
+      "type": "object",
+      "properties": {
+        "range": {
+          "type": "string"
+        },
+        "client_template": {
+          "type": "string",
+          "default": "/etc/wireguard/client.tpl"
+        },
+        "peer_template": {
+          "type": "string",
+          "default": "/etc/wireguard/peer.tpl"
+        },
+        "client_folder": {
+          "type": "string",
+          "default": "/etc/wireguard/clients/"
+        },
+        "peer_folder": {
+          "type": "string",
+          "default": "/etc/wireguard/peers/"
+        }
+      },
+      "required": [
+        "range"
+      ],
+      "additionalProperties": false
+    },
+    "clients": {
+      "description": "Name of the product",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "config",
+    "clients"
+  ]
+}

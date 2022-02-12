@@ -1,0 +1,26 @@
+
+
+config:
+  range: 172.16.246.0/24
+  client_template: ./sample_templates/client.tpl
+  peer_template: ./sample_templates/peer.tpl
+  client_folder: /tmp/foobar/client
+  peer_folder: /tmp/foobar/peers
+
+clients:
+  - device: "asdf"
+    ip_address: "172.16.246.1"
+  - device: "asdf"
+    ip_address: "172.16.246.2"
+  - device: "asdf"
+    ip_address: "172.16.246.3"
+  - device: "asdf"
+    ip_address: "172.16.246.255"
+  - device: "asdf"
+    ip_address: "172.16.246.254"
+  - device: "asdf"
+    ip_address: "172.16.246.253"
+  - device: "asdf"
+    ip_address: "172.16.246.252"
+  - device: "asdf"
+    ip_address: "172.16.246.251"
