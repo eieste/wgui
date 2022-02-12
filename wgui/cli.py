@@ -1,13 +1,12 @@
+# -*- coding: utf-8 -*-
 import argparse
-from pathlib import Path
-import yaml
-import sys
 import logging
-from wgui.utils.tunnel import Tunnel
-from wgui.conf.config import Configuration
+from pathlib import Path
 import re
-import os
+import sys
 
+from wgui.conf.config import Configuration
+from wgui.utils.tunnel import Tunnel
 
 log = logging.getLogger(__name__)
 
@@ -19,8 +18,7 @@ class Validator(object):
 
     def __call__(self, value):
         if not self._pattern.match(value):
-            raise argparse.ArgumentTypeError(
-                "Argument has to match '{}'".format(self._pattern.pattern))
+            raise argparse.ArgumentTypeError("Argument has to match '{}'".format(self._pattern.pattern))
         return value
 
 
@@ -79,7 +77,7 @@ class WgUiCommand:
         if options.cmd == "create":
             t = Tunnel(config)
             t.create(email=options.email, device=options.device)
-            #t.create(email=options)
+            # t.create(email=options)
 
 
 def main():

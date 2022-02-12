@@ -1,11 +1,12 @@
+# -*- coding: utf-8 -*-
+import functools
+import json
+import logging
 import pathlib
+import pkgutil
 
 import jsonschema
-import logging
-import pkgutil
 import yaml
-import json
-import functools
 
 log = logging.getLogger(__name__)
 
@@ -53,20 +54,20 @@ class Configuration:
     def add_client(self, ctx):
         clients = self.configuration.get("clients", [])
 
-        clients.append({
-            "device": ctx.get("device"),
-            "ip_address": ctx.get("ip_address"),
-            "email": ctx.get("email"),
-            "filename": ctx.get("filename"),
-            "public_key": ctx.get("public_key")
-        })
+        clients.append(
+            {
+                "device": ctx.get("device"),
+                "ip_address": ctx.get("ip_address"),
+                "email": ctx.get("email"),
+                "filename": ctx.get("filename"),
+                "public_key": ctx.get("public_key")
+            })
 
         with open(self._options.config, "r") as fobj:
-
             conf = yaml.load(fobj, Loader=yaml.FullLoader)
             print(conf)
             conf["clients"] = clients
             with open(self._options.config, "w") as fobj:
                 yaml.dump(conf, fobj, sort_keys=True, indent=2)
-            #fobj.seek(0)
-            #yaml.dump(conf, fobj)
+            # fobj.seek(0)
+            # yaml.dump(conf, fobj)

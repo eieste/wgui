@@ -1,11 +1,12 @@
-from ipaddress import IPv4Address, IPv4Network
+# -*- coding: utf-8 -*-
+from ipaddress import IPv4Network
 import logging
-import subprocess
+import os
 import random
 import string
-import jinja2
+import subprocess
+
 from jinja2 import Template
-import os
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ class Tunnel:
             fobj.write(conf)
 
     def load_tpl(self, name):
-        with open(os.path.join(self._config.get_path_config(name+"_template"))) as fobj:
+        with open(os.path.join(self._config.get_path_config(name + "_template"))) as fobj:
             template = Template(fobj.read())
             return template
 
