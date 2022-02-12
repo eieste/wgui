@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import sys
 
+import wgui
 from wgui.conf.config import Configuration
 from wgui.utils.tunnel import Tunnel
 
@@ -59,6 +60,14 @@ class WgUiCommand:
         return options
 
     def handle(self, parser, options):
+
+        if len(sys.argv) == 1:
+            parser.print_help(sys.stderr)
+            sys.exit(1)
+
+        if options.version is True:
+            print("wgui: {}".format(wgui.__version__))
+            sys.exit(0)
 
         if len(sys.argv) == 1:
             parser.print_help(sys.stderr)
