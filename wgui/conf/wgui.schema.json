@@ -35,12 +35,25 @@
       "additionalProperties": false
     },
     "clients": {
-      "description": "Name of the product",
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
+        "required": ["email", "ip_address", "filename"],
         "properties": {
           "device": {
+            "type": "string"
+          },
+          "email": {
+            "type": "sting"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "public_key": {
             "type": "string"
           }
         }

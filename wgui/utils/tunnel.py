@@ -25,11 +25,13 @@ class Tunnel:
             "private_key": keypair[0],
             "public_key": keypair[1],
             "filename": filename,
-            "ip_address": available_ip,
+            "ip_address": str(available_ip),
             "address_range": self._config.config("range")
         }
         self.generate_config("client", ctx)
         self.generate_config("peer", ctx)
+
+        self._config.add_client(ctx)
 
     def generate_config(self, name, ctx):
         tpl = self.load_tpl(name)
@@ -56,7 +58,6 @@ class Tunnel:
             if str(possible_host) not in self._config.get_client_ip_addresses():
                 log.debug(possible_host)
                 return possible_host
-
 
     def generate_wireguard_keys(self):
         """
