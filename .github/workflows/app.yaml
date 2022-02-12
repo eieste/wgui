@@ -166,7 +166,7 @@ jobs:
 
       - name: "Install Package"
         run: |
-          comiomon -v
+          wgui -v
 
   pkg-pypi:
     needs:
