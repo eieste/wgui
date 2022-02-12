@@ -58,7 +58,7 @@ jobs:
 
       - name: Run test suite
         run: |
-          pytest --cov-report xml:coverage.xml --cov=comiomon .
+          pytest --cov-report xml:coverage.xml --cov=wgui .
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v2
@@ -215,7 +215,7 @@ jobs:
       - name: "Upload twine"
         run: |
           python3 -m twine upload --verbose \
-          --non-interactive --repository comiomon \
+          --non-interactive --repository wgui \
           --repository-url ${{ secrets.TWINE_REPOSITORY_URL }} \
           --username ${{ secrets.TWINE_USERNAME }} \
           --password ${{ secrets.TWINE_PASSWORD }} dist/*
