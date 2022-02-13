@@ -14,33 +14,80 @@
         },
         "client_template": {
           "type": "string",
-          "default": "/etc/wgui/client.tpl"
+          "default": "/etc/wgui/client.tpl",
+          "description": "Used to create a Configuration for clients. ( the configuration for external devices )"
         },
         "peer_template": {
           "type": "string",
-          "default": "/etc/wgui/peer.tpl"
+          "default": "/etc/wgui/peer.tpl",
+          "description": "Used to configure wireguard peer. (Extend WG-Server with a new peer (client)"
         },
         "client_folder": {
           "type": "string",
-          "default": "/etc/wireguard/clients/"
+          "default": "/etc/wireguard/clients/",
+          "description": "Folder where the client certificates are 'backuped'"
         },
         "peer_folder": {
           "type": "string",
-          "default": "/etc/wireguard/peers/"
+          "default": "/etc/wireguard/peers/",
+          "description": "Folder where the Peer configurations are stored"
         },
-        "saml_key": {
-          "type": "string",
-          "default": "/etc/wgui/saml.key"
-        },
-        "saml_crt": {
-          "type": "string",
-          "default": "/etc/wgui/saml.crt"
-        },
-        "idp_meta_url": {
-          "type": "string",
-          "format": "url"
+        "saml": {
+          "type": "object",
+          "description": "Configure a SAML Provider for Web-UI authentification",
+          "properties": {
+            "saml_key": {
+              "type": "string",
+              "default": "/etc/wgui/saml.key",
+              "description": "Key for this Service Provider. The Key must be generated via openssl command. See readme.md"
+            },
+            "saml_crt": {
+              "type": "string",
+              "default": "/etc/wgui/saml.crt",
+              "description": "Key for this Service Provider. The Key must be generated via openssl command. See readme.md"
+            },
+            "id_providers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "display_name": {
+                    "type": "string",
+                    "description": "Name for the connected IdP"
+                  },
+                  "button_style": {
+                    "type": "string",
+                    "description": "Style for the Login-Button. Tailwind Classes should be used"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "description": "Slug to identifiy the IdP"
+                  },
+                  "entity_id": {
+                    "type": "string",
+                    "description": "The IdP EntryId"
+                  },
+                  "sso_url": {
+                    "type": "string",
+                    "description": "The IdP Single Sign On - URL"
+                  },
+                  "slo_url": {
+                    "type": "string",
+                    "description": "The IdP Single Logout URL"
+                  },
+                  "certificate_path": {
+                    "type": "string",
+                    "description": "Path to the IdP Certificate"
+                  }
+                }
+              }
+            }
+          }
         },
         "secret_key": {
+          "type": "string"
+        },
+        "app_url": {
           "type": "string"
         }
       },

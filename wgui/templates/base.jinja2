@@ -4,3 +4,7 @@
     {{ super() }}
     <link rel="stylesheet" href="static/css/tailwind.css"/>
 {% endblock %}
+
+{% block body_inner %}
+    {% include "components/flash.jinja2" %}
+{% endblock %}

@@ -41,7 +41,7 @@ class WgUiCommand:
         """
             Parser add Arguments
         """
-        parser.add_argument("-c", "--config", type=Path, required=True, help="File config path")
+        parser.add_argument("-c", "--config", type=Path, required=True, help="File get_config path")
         parser.add_argument("-d", "--debug", action="store_true", help="Enable Debug mode")
         parser.add_argument("-v", "--version", action="store_true", help="Display Version")
 
@@ -100,10 +100,11 @@ class WgUiCommand:
         if options.cmd == "server":
             app = Flask(__name__)
             app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
-            app.config["SECRET_KEY"] = config.config("secret_key")
+            app.config["SECRET_KEY"] = config.get_config("secret_key")
+            app.config["APP_URL"] = config.get_config("app_url")
             apply_saml(config, app)
             apply_routes(config, app)
-            # apply_own_saml(config, app)
+            # apply_own_saml(get_config, app)
             app.run(
                 debug=options.debug,
                 host=options.host,

@@ -3,10 +3,13 @@ module.exports = {
         extend: {},
     },
     content: [
-        'wgui/templates/**/*.jinja2'
+        'wgui/templates/**/*.jinja2',
+        "wgui/templates/componetns/flash.jinja2"
     ],
     plugins: [
-        require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
+        require('@tailwindcss/forms'),
+        require('@tailwindcss/line-clamp'),
+        require('@tailwindcss/aspect-ratio'),
     ]
 }

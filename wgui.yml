@@ -4,8 +4,21 @@ config:
   peer_template: ./sample/peer.tpl
   client_folder: /etc/wireguard/clients
   peer_folder: /etc/wireguard/peers
-
-  saml_crt: /etc/wgui/saml.crt
-  saml_key: /etc/wgui/saml.key
-  idp_meta_url: ""
   secret_key: "c346e4fa76925518349d3489a471994d"
+  app_url: "vpn.eneka.xyz"
+  saml:
+    saml_crt: "/etc/wgui/saml.crt"
+    saml_key: "/etc/wgui/saml.key"
+    id_providers:
+      - display_name: "Google"
+        button_style: "blue"
+        slug: "google"
+        entity_id: 'https://accounts.google.com/o/saml2?idpid=C02hme6u2'
+        sso_url: 'https://accounts.google.com/o/saml2/idp?idpid=C02hme6u2'
+        certificate_path: "/etc/wgui/google.pem"
+      - display_name: "foo"
+        button_style: "blue"
+        slug: "google"
+        entity_id: 'https://accounts.google.com/o/saml2?idpid=C02hme6u2'
+        sso_url: 'https://accounts.google.com/o/saml2/idp?idpid=C02hme6u2'
+        certificate_path: "/etc/wgui/google.pem"

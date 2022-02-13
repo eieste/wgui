@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 import os
 import random
@@ -28,7 +29,7 @@ class Tunnel:
             "public_key": keypair[1],
             "filename": filename,
             "ip_address": str(available_ip),
-            "address_range": self._config.config("range")
+            "address_range": self._config.get_config("range")
         }
         self.generate_config("client", ctx)
         self.generate_config("peer", ctx)
@@ -39,14 +40,16 @@ class Tunnel:
         tpl = self.load_tpl(name)
         conf = tpl.render(ctx)
         log.debug(conf)
-        target_path = os.path.join(self._config.get_path_config("{}_folder".format(name)), "{}.conf".format(ctx.get("filename")))
+        folder_path = self._config.get_config("{}_folder".format(name))
+        target_path = os.path.join(self._config.get_path_config(folder_path), "{}.conf".format(ctx.get("filename")))
         log.debug("Write {}".format(target_path))
 
         with open(target_path, "w+") as fobj:
             fobj.write(conf)
 
     def load_tpl(self, name):
-        with open(os.path.join(self._config.get_path_config(name + "_template"))) as fobj:
+        template_path = self._config.get_config(name + "_template")
+        with open(os.path.join(self._config.get_path_config(template_path)), "r") as fobj:
             template = Template(fobj.read())
             return template
 
@@ -56,7 +59,7 @@ class Tunnel:
         return result_str
 
     def find_available_ip_address(self):
-        for possible_host in IPv4Network(self._config.config("range")).hosts():
+        for possible_host in IPv4Network(self._config.get_config("range")).hosts():
             if str(possible_host) not in self._config.get_client_ip_addresses():
                 log.debug(possible_host)
                 return possible_host

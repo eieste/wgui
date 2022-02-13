@@ -1,6 +1,6 @@
 # WGUI
 
-A config generator for Wireguard
+A get_config generator for Wireguard
 
 ## Configuration
 
@@ -15,7 +15,7 @@ openssl req -x509 -newkey rsa:4096 -keyout saml.key -out saml.crt -sha256 -days 
 ### wgui.yml
 
 ```yaml
-config:
+get_config:
   range: 172.16.246.0/12
   client_template: /etc/wgui/client.tpl
   peer_template: ./sample/peer.tpl
