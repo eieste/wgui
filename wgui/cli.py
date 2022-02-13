@@ -5,9 +5,14 @@ from pathlib import Path
 import re
 import sys
 
+from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 import wgui
 from wgui.conf.config import Configuration
+from wgui.utils.saml import apply_saml
 from wgui.utils.tunnel import Tunnel
+from wgui.utils.web import apply_routes
 
 log = logging.getLogger(__name__)
 
@@ -37,14 +42,18 @@ class WgUiCommand:
             Parser add Arguments
         """
         parser.add_argument("-c", "--config", type=Path, required=True, help="File config path")
-        parser.add_argument("-r", "--run", action="store_true", help="Start Webserver")
         parser.add_argument("-d", "--debug", action="store_true", help="Enable Debug mode")
         parser.add_argument("-v", "--version", action="store_true", help="Display Version")
 
         submod = parser.add_subparsers(title="subcommands", dest="cmd")
-        tunnel_parser = submod.add_parser("create")
+        tunnel_parser = submod.add_parser("tunnel-create")
         tunnel_parser.add_argument("--email", type=Validator(r"^[^@]+@[^@]+\.[^@]+$"), required=True)
         tunnel_parser.add_argument("--device", type=Validator(r"^[a-z0-9]+(?:-[a-z0-9]+)*$"), required=True)
+
+        server_parser = submod.add_parser("server")
+        server_parser.add_argument("--start", action="store_true", required=False)
+        server_parser.add_argument("--host", type=str, default="0.0.0.0", required=False)
+        server_parser.add_argument("--port", type=int, default=80, required=False)
 
     def get_parser(self):
         """
@@ -83,10 +92,23 @@ class WgUiCommand:
     def start(self, parser, options):
         config = Configuration(options)
 
-        if options.cmd == "create":
+        if options.cmd == "tunnel-create":
             t = Tunnel(config)
             t.create(email=options.email, device=options.device)
             # t.create(email=options)
+
+        if options.cmd == "server":
+            app = Flask(__name__)
+            app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
+            app.config["SECRET_KEY"] = config.config("secret_key")
+            apply_saml(config, app)
+            apply_routes(config, app)
+            # apply_own_saml(config, app)
+            app.run(
+                debug=options.debug,
+                host=options.host,
+                port=options.port,
+            )
 
 
 def main():

@@ -14,11 +14,11 @@
         },
         "client_template": {
           "type": "string",
-          "default": "/etc/wireguard/client.tpl"
+          "default": "/etc/wgui/client.tpl"
         },
         "peer_template": {
           "type": "string",
-          "default": "/etc/wireguard/peer.tpl"
+          "default": "/etc/wgui/peer.tpl"
         },
         "client_folder": {
           "type": "string",
@@ -27,6 +27,21 @@
         "peer_folder": {
           "type": "string",
           "default": "/etc/wireguard/peers/"
+        },
+        "saml_key": {
+          "type": "string",
+          "default": "/etc/wgui/saml.key"
+        },
+        "saml_crt": {
+          "type": "string",
+          "default": "/etc/wgui/saml.crt"
+        },
+        "idp_meta_url": {
+          "type": "string",
+          "format": "url"
+        },
+        "secret_key": {
+          "type": "string"
         }
       },
       "required": [
@@ -37,32 +52,40 @@
     "clients": {
       "type": "array",
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["email", "ip_address", "filename"],
-        "properties": {
-          "device": {
-            "type": "string"
-          },
-          "email": {
-            "type": "sting"
-          },
-          "ip_address": {
-            "type": "string"
-          },
-          "filename": {
-            "type": "string"
-          },
-          "public_key": {
-            "type": "string"
-          }
-        }
+        "$ref": "#/$defs/device"
       }
     }
   },
   "additionalProperties": false,
   "required": [
-    "config",
-    "clients"
-  ]
+    "config"
+  ],
+  "$defs": {
+    "client": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "email",
+        "ip_address",
+        "filename"
+      ],
+      "properties": {
+        "device": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "ip_address": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "public_key": {
+          "type": "string"
+        }
+      }
+    }
+  }
 }

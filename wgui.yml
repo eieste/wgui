@@ -1,0 +1,11 @@
+config:
+  range: 172.16.246.0/12
+  client_template: ./sample/client.tpl
+  peer_template: ./sample/peer.tpl
+  client_folder: /etc/wireguard/clients
+  peer_folder: /etc/wireguard/peers
+
+  saml_crt: /etc/wgui/saml.crt
+  saml_key: /etc/wgui/saml.key
+  idp_meta_url: ""
+  secret_key: "c346e4fa76925518349d3489a471994d"

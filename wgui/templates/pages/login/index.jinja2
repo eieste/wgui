@@ -1,0 +1,20 @@
+{% extends "base.jinja2" %}
+
+{% block body_inner %}
+    <div class="flex flex-col items-center justify-center w-screen h-screen bg-gray-200 text-gray-700">
+        <form class="flex flex-col bg-white rounded shadow-lg p-12 mt-12" action="">
+            <h1 class="text-lg">wgui - Login</h1>
+            <a href="{{ url_for('flask_saml2_sp.login') }}"
+               class="flex items-center justify-center h-12 px-6 w-64 bg-blue-600 mt-8 rounded font-semibold text-sm text-blue-100 hover:bg-blue-700">
+                Google
+            </a>
+            <!--
+            <div class="flex mt-6 justify-center text-xs">
+                <a class="text-blue-400 hover:text-blue-500" href="#">Forgot Password</a>
+                <span class="mx-2 text-gray-300">/</span>
+                <a class="text-blue-400 hover:text-blue-500" href="#">Sign Up</a>
+            </div>
+            -->
+        </form>
+    </div>
+{% endblock %}

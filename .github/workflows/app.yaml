@@ -201,6 +201,12 @@ jobs:
           virtualenv venv
           source venv/bin/activate
 
+      - name: "Compile Tailwind"
+        run: |
+          curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x86
+          chmod +x tailwindcss-linux-x86
+          ./tailwindcss-linux-x86 -i src/css/tailwindcss -o wgui/static/css/tailwind.css
+
       - name: "Install Packages"
         run: |
           pip3 freeze

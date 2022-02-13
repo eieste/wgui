@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import functools
 import json
 import logging
 import pathlib
@@ -25,7 +24,6 @@ class Configuration:
         return json.loads(schema)
 
     @staticmethod
-    @functools.cache
     def get_config(path):
         log.debug("Load Config from path: {}".format(path))
         with open(path, "r") as fobj:
@@ -47,6 +45,7 @@ class Configuration:
         return ip_address_list
 
     def get_path_config(self, name):
+        print(name)
         p = pathlib.Path(self._options.config).parent.resolve().joinpath(self.config(name))
         log.debug("Config-FilePath: {}".format(p))
         return p
