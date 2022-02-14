@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import argparse
 import os
 import pathlib
 import secrets
@@ -71,7 +70,3 @@ class ConfigurationInitializer:
         if retry >= 3:
             raise ValueError("too many invalid inputs")
         return data
-
-
-a = ConfigurationInitializer(None, argparse.Namespace(config="foooo"))
-a.create_config_yaml("x")
