@@ -24,7 +24,11 @@ setup(
         "Flask-WTF==1.0.0", "pytest-mock==3.7.0"
     ],
     package_data={
-        '': ['conf/wgui.schema.json', "sample/*", 'templates/*', 'static/*'],
+        '':
+            [
+                'conf/wgui.schema.json', "sample/*", 'templates/*', 'templates/*/*', 'templates/*/*/*', 'static/*', 'static/*/*',
+                'static/*/*/*'
+            ],
     },
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
