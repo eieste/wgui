@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import pathlib
 import secrets
@@ -7,6 +8,8 @@ import secrets
 import yaml
 
 from wgui.conf.config import Configuration
+
+log = logging.getLogger(__name__)
 
 
 class ConfigurationInitializer:
@@ -22,12 +25,18 @@ class ConfigurationInitializer:
         self.initialize_config_files(config)
 
     def initialize_config_files(self, config):
-        pathlib.Path(config.get("config.client_folder", mod="get_relative_path")).mkdir(parents=True)
-        pathlib.Path(config.get("config.peer_folder", mod="get_relative_path")).mkdir(parents=True)
-        pathlib.Path(config.get("config.client_template", mod="get_relative_path")).parent.mkdir(parents=True)
-        pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).parent.mkdir(parents=True)
-        pathlib.Path(config.get("config.client_template", mod="get_relative_path")).touch()
-        pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).touch()
+        log.debug("Create client_folder")
+        pathlib.Path(config.get("config.client_folder", mod="get_relative_path")).mkdir(parents=True, exist_ok=True)
+        log.debug("Create peer_folder")
+        pathlib.Path(config.get("config.peer_folder", mod="get_relative_path")).mkdir(parents=True, exist_ok=True)
+        log.debug("Create client_template")
+        pathlib.Path(config.get("config.client_template", mod="get_relative_path")).parent.mkdir(parents=True, exist_ok=True)
+        log.debug("Create peer_template")
+        pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).parent.mkdir(parents=True, exist_ok=True)
+        log.debug("Create client_template")
+        pathlib.Path(config.get("config.client_template", mod="get_relative_path")).touch(exist_ok=True)
+        log.debug("Create peer_template")
+        pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).touch(exist_ok=True)
 
     def create_config_yaml(self, config_file):
         config_data = self.get_new_configuration_data()
