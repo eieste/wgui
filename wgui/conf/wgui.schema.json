@@ -100,6 +100,12 @@
         },
         "app_url": {
           "type": "string"
+        },
+        "reserved_ip": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [

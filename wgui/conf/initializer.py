@@ -57,7 +57,8 @@ class ConfigurationInitializer:
             "app_url": "URL of used for Webinterface: ",
             "wg_endpoint": "Wireguard Endpoint domain (with port): ",
             "wg_public_key": "Wireguard Server Public Key: ",
-            "wg_ip_range": "IP-Range used for Peers: "
+            "wg_ip_range": "IP-Range used for Peers: ",
+            "reserved_ip": "Wireguard Gateway IP: "
         }
         user_config = {}
         for slug, prompt in question.items():
@@ -77,7 +78,8 @@ class ConfigurationInitializer:
                     "client_template": "/etc/wgui/client.tpl",
                     "peer_template": "/etc/wgui/peer.tpl",
                     "secret_key": secrets.token_urlsafe(32),
-                    "app_url": user_config.get("app_url")
+                    "app_url": user_config.get("app_url"),
+                    "reserved_ip": [user_config.get("reserved_ip")]
                 }
         }
         return config_data

@@ -33,7 +33,7 @@ def apply_routes(config, app):
         with open(os.path.join(config.get("config.peer_folder", mod="get_relative_path"), "{}.conf".format(filename))) as fobj:
             context["peer_config"] = fobj.read()
 
-        img = qrcode.make(context["client_config"], image_factory=qrcode.image.svg.SvgImage)
+        img = qrcode.make("# 10: 10 > wgclient.conf \n" + context["client_config"], image_factory=qrcode.image.svg.SvgImage)
         stream = io.BytesIO()
         img.save(stream)
         stream.seek(0)

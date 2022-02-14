@@ -5,6 +5,7 @@ from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 import os
 import random
@@ -42,7 +43,12 @@ class Tunnel:
         self.generate_config("client", ctx)
         self.generate_config("peer", ctx)
         self._config.helper.add_client(ctx)
+        self.apply_config_to_server(filename)
         return ctx
+
+    def apply_config_to_server(self, filename):
+        peer_file = os.path.join(self._config.get("config.peer_folder", mod="get_relative_file"), "{}.conf".format(filename))
+        subprocess.check_output(f"wg addconf wg0 {peer_file}", shell=True).decode("utf-8").strip()
 
     def generate_config(self, name, ctx):
         tpl = self.load_tpl(name)
@@ -68,7 +74,8 @@ class Tunnel:
 
     def find_available_ip_address(self):
         for possible_host in IPv4Network(self._config.get("config.wireguard.ip_range")).hosts():
-            if str(possible_host) not in self._config.helper.get_client_ip_addresses():
+            if str(possible_host) not in self._config.helper.get_client_ip_addresses() and str(possible_host) not in self._config.get(
+                    "config.reserved_ip"):
                 log.debug(possible_host)
                 return possible_host
 
