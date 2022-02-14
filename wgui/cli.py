@@ -92,7 +92,7 @@ class WgUiCommand:
         if options.config is None:
             raise ValueError("--config is required")
 
-        if options.initialize:
+        if options.initialize is True:
             ConfigurationInitializer(parser, options)
             log.info("Exit")
             sys.exit(0)
