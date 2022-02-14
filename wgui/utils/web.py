@@ -68,10 +68,10 @@ def apply_routes(config, app):
 
     @app.route("/", methods=["GET"])
     def index():
-        handler = sp.get_default_idp_handler()
+        # handler = sp.get_default_idp_handler()
         login_next = sp.get_login_return_url()
-        if handler:
-            return redirect(
-                url_for('flask_saml2_sp.login_idp', entity_id=handler.entity_id, next=login_next,
-                        _external=True))  # _scheme=sp.get_scheme(),
+        # if handler:
+        #     return redirect(
+        #         url_for('flask_saml2_sp.login_idp', entity_id=handler.entity_id, next=login_next,
+        #                 _external=True))  # _scheme=sp.get_scheme(),
         return sp.render_template('pages/login/index.jinja2', login_next=login_next, handlers=sp.get_idp_handlers())
