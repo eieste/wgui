@@ -59,7 +59,11 @@ class ConfiguraitonHelper:
         log.debug("Config-FilePath: {}".format(p))
         return p
 
-    def get_relative_path(self, path):
-        p = pathlib.Path(self.config._options.config).parent.resolve().joinpath(path)
-        log.debug("Config-FilePath: {}".format(p))
-        return p
+    def get_relative_path(self, target_path):
+        return get_relative_path(self._config.options.config, target_path)
+
+
+def get_relative_path(origin_path, target_path):
+    p = pathlib.Path(origin_path).parent.resolve().joinpath(target_path)
+    log.debug("Config-FilePath: {}".format(p))
+    return p

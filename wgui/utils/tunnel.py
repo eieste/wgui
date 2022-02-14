@@ -4,6 +4,7 @@ from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 import os
 import random
@@ -31,7 +32,7 @@ class Tunnel:
             "public_key": keypair[1],
             "filename": filename,
             "ip_address": str(available_ip),
-            "address_range": self._config.get("config.range"),
+            "address_range": self._config.get("config.wireguard.ip_range"),
             "wireguard":
                 {
                     "endpoint": self._config.get("config.wireguard.endpoint"),
@@ -55,8 +56,8 @@ class Tunnel:
             fobj.write(conf)
 
     def load_tpl(self, name):
-        template_path = self._config.get("config.{}_template".format(name))
-        with open(os.path.join(self._config.helper.get_path_config(template_path)), "r") as fobj:
+        template_path = self._config.get("config.{}_template".format(name), mod="get_relative_path")
+        with open(template_path, "r") as fobj:
             template = Template(fobj.read())
             return template
 
@@ -66,7 +67,7 @@ class Tunnel:
         return result_str
 
     def find_available_ip_address(self):
-        for possible_host in IPv4Network(self._config.get("config.range")).hosts():
+        for possible_host in IPv4Network(self._config.get("config.wireguard.ip_range")).hosts():
             if str(possible_host) not in self._config.helper.get_client_ip_addresses():
                 log.debug(possible_host)
                 return possible_host

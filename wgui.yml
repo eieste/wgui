@@ -1,43 +1,43 @@
 clients:
-- device: ios
-  email: stefan.eiermann@eneka.de
-  filename: bjtwcmgbvy
-  ip_address: 172.16.246.1
-  public_key: wrV50XIktOuEXOXXgGz+vRAJXWRskX6wYjouR3CWaF0=
-- device: foobar
-  email: stefan.eiermann@eneka.de
-  filename: bjtwcmgbvy
-  ip_address: 172.16.246.1
-  public_key: wrV50XIktOuEXOXXgGz+vRAJXWRskX6wYjouR3CWaF0=
-- device: hallowelt
-  email: stefan.eiermann@eneka.de
-  filename: ytscyxiovf
-  ip_address: 172.16.246.2
-  public_key: 7Q5uperDBoDvBkKnD/pTHJugLRSQhnpxDPBKtt9VuQM=
+  - device: ios
+    email: stefan.eiermann@eneka.de
+    filename: bjtwcmgbvy
+    ip_address: 172.16.246.1
+    public_key: wrV50XIktOuEXOXXgGz+vRAJXWRskX6wYjouR3CWaF0=
+  - device: foobar
+    email: stefan.eiermann@eneka.de
+    filename: bjtwcmgbvy
+    ip_address: 172.16.246.1
+    public_key: wrV50XIktOuEXOXXgGz+vRAJXWRskX6wYjouR3CWaF0=
+  - device: hallowelt
+    email: stefan.eiermann@eneka.de
+    filename: ytscyxiovf
+    ip_address: 172.16.246.2
+    public_key: 7Q5uperDBoDvBkKnD/pTHJugLRSQhnpxDPBKtt9VuQM=
 config:
   app_url: vpn.eneka.xyz
   client_folder: /etc/wireguard/clients
   client_template: ./sample/client.tpl
   peer_folder: /etc/wireguard/peers
   peer_template: ./sample/peer.tpl
-  range: 172.16.246.0/24
   saml:
     id_providers:
-    - button_style: blue
-      certificate_path: /etc/wgui/google.pem
-      display_name: Google
-      entity_id: https://accounts.google.com/o/saml2?idpid=C02hme6u2
-      slug: google
-      sso_url: https://accounts.google.com/o/saml2/idp?idpid=C02hme6u2
-    - button_style: blue
-      certificate_path: /etc/wgui/google.pem
-      display_name: Microsoft
-      entity_id: https://accounts.google.com/o/saml2?idpid=C02hme6u2
-      slug: google
-      sso_url: https://accounts.google.com/o/saml2/idp?idpid=C02hme6u2
+      - button_style: blue
+        certificate_path: /etc/wgui/google.pem
+        display_name: Google
+        entity_id: https://accounts.google.com/o/saml2?idpid=C02hme6u2
+        slug: google
+        sso_url: https://accounts.google.com/o/saml2/idp?idpid=C02hme6u2
+      - button_style: blue
+        certificate_path: /etc/wgui/google.pem
+        display_name: Microsoft
+        entity_id: https://accounts.google.com/o/saml2?idpid=C02hme6u2
+        slug: google
+        sso_url: https://accounts.google.com/o/saml2/idp?idpid=C02hme6u2
     saml_crt: /etc/wgui/saml.crt
     saml_key: /etc/wgui/saml.key
   secret_key: c346e4fa76925518349d3489a471994d
   wireguard:
     endpoint: vpn.eneka.xyz
     public_key: xxxxxxxxxxxxxx
+    ip_range: 172.16.246.0/24

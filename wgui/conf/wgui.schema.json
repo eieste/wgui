@@ -9,9 +9,6 @@
       "description": "Configuration Item",
       "type": "object",
       "properties": {
-        "range": {
-          "type": "string"
-        },
         "client_template": {
           "type": "string",
           "default": "/etc/wgui/client.tpl",
@@ -36,6 +33,9 @@
           "type": "object",
           "properties": {
             "public_key": {
+              "type": "string"
+            },
+            "ip_range": {
               "type": "string"
             },
             "endpoint": {
@@ -103,7 +103,7 @@
         }
       },
       "required": [
-        "range"
+        "wireguard"
       ],
       "additionalProperties": false
     },
