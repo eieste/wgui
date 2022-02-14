@@ -60,7 +60,7 @@ class ConfigurationHelper:
         return p
 
     def get_relative_path(self, target_path):
-        return get_relative_path(self.config.options.config, target_path)
+        return get_relative_path(self.config._options.config, target_path)
 
 
 def get_relative_path(origin_path, target_path):
