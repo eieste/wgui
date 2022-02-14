@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from wgui.cli import WgUiCommand
 
 if __name__ in "__main__":
