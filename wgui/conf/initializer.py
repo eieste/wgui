@@ -3,6 +3,7 @@
 import logging
 import os
 import pathlib
+import pkgutil
 import secrets
 
 import yaml
@@ -33,10 +34,18 @@ class ConfigurationInitializer:
         pathlib.Path(config.get("config.client_template", mod="get_relative_path")).parent.mkdir(parents=True, exist_ok=True)
         log.debug("Create peer_template")
         pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).parent.mkdir(parents=True, exist_ok=True)
-        log.debug("Create client_template")
-        pathlib.Path(config.get("config.client_template", mod="get_relative_path")).touch(exist_ok=True)
+
+        if not pathlib.Path(config.get("config.client_template", mod="get_relative_path")).exists():
+            log.debug("Create client_template")
+            with pathlib.Path(config.get("config.client_template", mod="get_relative_path")).open("w+") as fobj:
+                fobj.write(pkgutil.get_data("wgui", "sample/client.tpl"))
+
         log.debug("Create peer_template")
-        pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).touch(exist_ok=True)
+
+        if not pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).exists():
+            log.debug("Create peer_template")
+            with pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).open("w+") as fobj:
+                fobj.write(pkgutil.get_data("wgui", "sample/peer.tpl"))
 
     def create_config_yaml(self, config_file):
         config_data = self.get_new_configuration_data()
