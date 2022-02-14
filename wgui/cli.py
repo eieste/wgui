@@ -10,6 +10,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 import wgui
 from wgui.conf.config import Configuration
+from wgui.conf.initializer import ConfigurationInitializer
 from wgui.utils.saml import apply_saml
 from wgui.utils.tunnel import Tunnel
 from wgui.utils.web import apply_routes
@@ -44,6 +45,7 @@ class WgUiCommand:
         parser.add_argument("-c", "--config", type=Path, help="File get_config path")
         parser.add_argument("-d", "--debug", action="store_true", help="Enable Debug mode")
         parser.add_argument("-v", "--version", action="store_true", help="Display Version")
+        parser.add_argument("-i", "--initialize", action="store_true", help="Default Configuration initialize")
 
         submod = parser.add_subparsers(title="subcommands", dest="cmd")
         tunnel_parser = submod.add_parser("tunnel-create")
@@ -89,6 +91,12 @@ class WgUiCommand:
 
         if options.config is None:
             raise ValueError("--config is required")
+
+        if options.initialize:
+            ConfigurationInitializer(parser, options)
+            log.info("Exit")
+            sys.exit(0)
+
         self.start(parser, options)
 
     def start(self, parser, options):

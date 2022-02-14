@@ -92,7 +92,6 @@ class Configuration:
 
         if mod is not None:
             return getattr(self.helper, mod)(conf)
-
         return conf
 
     def get_path_config(self, value):
