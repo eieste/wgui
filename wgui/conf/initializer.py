@@ -57,7 +57,7 @@ class ConfigurationInitializer:
                     "client_folder": "/etc/wireguard/clients",
                     "peer_folder": "/etc/wireguard/peers",
                     "client_template": "/etc/wgui/client.tpl",
-                    "peer_tpl": "/etc/wgui/peer.tpl",
+                    "peer_template": "/etc/wgui/peer.tpl",
                     "secret_key": secrets.token_urlsafe(32),
                     "app_url": user_config.get("app_url")
                 }
