@@ -31,7 +31,7 @@ class ConfigurationInitializer:
 
     def create_config_yaml(self, config_file):
         config_data = self.get_new_configuration_data()
-        with open(config_file, "r+") as fobj:
+        with open(config_file, "w+") as fobj:
             yaml.dump(config_data, fobj)
 
     def get_new_configuration_data(self):
@@ -54,6 +54,10 @@ class ConfigurationInitializer:
                             "ip_range": user_config.get("wg_ip_range"),
                             "public_key": user_config.get("wg_public_key")
                         },
+                    "client_folder": "/etc/wireguard/clients",
+                    "peer_folder": "/etc/wireguard/peers",
+                    "client_template": "/etc/wgui/client.tpl",
+                    "peer_tpl": "/etc/wgui/peer.tpl",
                     "secret_key": secrets.token_urlsafe(32),
                     "app_url": user_config.get("app_url")
                 }
