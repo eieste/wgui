@@ -9,7 +9,7 @@ from wgui.contrib.decorators import deprecated
 log = logging.getLogger(__name__)
 
 
-class ConfiguraitonHelper:
+class ConfigurationHelper:
 
     def __init__(self, config):
         self.config = config
