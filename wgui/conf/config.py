@@ -7,6 +7,7 @@ import pkgutil
 import jsonschema
 import yaml
 
+from wgui.conf.helper import ConfigurationHelper
 from wgui.contrib.decorators import deprecated
 
 log = logging.getLogger(__name__)
