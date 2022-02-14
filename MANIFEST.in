@@ -1,0 +1,3 @@
+recursive-include wgui/templates *
+recursive-include wgui/static *
+recursive-include wgui/sample *

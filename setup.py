@@ -31,8 +31,7 @@ setup(
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Environment :: Console"
-        "Topic :: System :: Monitoring",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
         "Operating System :: Unix",
     ],
     entry_points={'console_scripts': ['wgui = wgui.main:main']},
