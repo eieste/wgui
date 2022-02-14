@@ -40,7 +40,7 @@ class Configuration:
 
     def get_client_ip_addresses(self):
         ip_address_list = []
-        for client in self.configuration.get("clients"):
+        for client in self.configuration.get("clients", {}):
             ip_address_list.append(client.get("ip_address"))
         return ip_address_list
 
@@ -72,6 +72,13 @@ class Configuration:
 
     def get_all_saml_idps(self):
         return self.get_config("saml").get("id_providers")
+
+    def get_clients_by_user(self, email):
+        client_list = []
+        for client in self.configuration.get("clients"):
+            if client.get("email") == email:
+                client_list.append(client)
+        return client_list
 
     def get_saml_idp_by_slug(self, slug):
         for saml in self.get_config("saml").get("id_providers"):

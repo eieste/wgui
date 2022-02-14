@@ -4,7 +4,7 @@ PrivateKey = {{private_key}}
 DNS = 10.0.0.12
 
 [Peer]
-PublicKey = <SERVER-PUBLIC-KEY>
-Endpoint = <VPN_ENDPOINT>:<VPN_ENDPOINT_PORT>
+PublicKey = {{ wireguard.public_key }}
+Endpoint = {{ wireguard.endpoint }}
 AllowedIPs = 10.0.0.0/19,{{address_range}}
 PersistentKeepalive = 21

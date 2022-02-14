@@ -1,0 +1,76 @@
+{% extends "base.jinja2" %}
+
+{% block content_inner %}
+    <h3 class="text-gray-700 text-3xl font-medium">Device: {{ client.device }}</h3>
+    <div class="mt-4">
+
+
+        <div class="grid grid-cols-2 gap-2">
+
+            <div class="shadow-sm rounded-md bg-white col-span-2">
+                <div class="relative float-left    ">
+                    {{ qrcode }}
+                </div>
+                <div class="relative float-left    ">
+                    <div class="font-bold text-xl mb-2">Meta</div>
+                    <table>
+                        <tr>
+                            <td>
+                                Device
+                            </td>
+                            <td>
+                                {{ client.device }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                User
+                            </td>
+                            <td>
+                                {{ client.email }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                IP-Address
+                            </td>
+                            <td>
+                                {{ client.ip_address }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Filename
+                            </td>
+                            <td>
+                                {{ client.filename }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Public Key
+                            </td>
+                            <td>
+                                {{ client.public_key }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="px-5 py-6 shadow-sm rounded-md bg-white">
+                <div class="font-bold text-xl mb-2">Config</div>
+                <pre class="relative">
+{{ client_config }}
+                </pre>
+            </div>
+
+            <div class="px-5 py-6 shadow-sm rounded-md bg-white">
+                <div class="font-bold text-xl mb-2">Peer</div>
+                <pre>
+{{ peer_config }}
+                </pre>
+            </div>
+        </div>
+    </div>
+{% endblock %}

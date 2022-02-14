@@ -2,6 +2,7 @@
 from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 import os
 import random
@@ -29,12 +30,17 @@ class Tunnel:
             "public_key": keypair[1],
             "filename": filename,
             "ip_address": str(available_ip),
-            "address_range": self._config.get_config("range")
+            "address_range": self._config.get_config("range"),
+            "wireguard":
+                {
+                    "endpoint": self._config.get_config("wireguard").get("endpoint"),
+                    "public_key": self._config.get_config("wireguard").get("public_key")
+                }
         }
         self.generate_config("client", ctx)
         self.generate_config("peer", ctx)
-
         self._config.add_client(ctx)
+        return ctx
 
     def generate_config(self, name, ctx):
         tpl = self.load_tpl(name)

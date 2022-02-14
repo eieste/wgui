@@ -32,6 +32,17 @@
           "default": "/etc/wireguard/peers/",
           "description": "Folder where the Peer configurations are stored"
         },
+        "wireguard": {
+          "type": "object",
+          "properties": {
+            "public_key": {
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string"
+            }
+          }
+        },
         "saml": {
           "type": "object",
           "description": "Configure a SAML Provider for Web-UI authentification",
@@ -99,7 +110,7 @@
     "clients": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/device"
+        "$ref": "#/$defs/client"
       }
     }
   },
