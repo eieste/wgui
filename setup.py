@@ -25,8 +25,8 @@ setup(
     ],
     package_data={
         '': ['conf/wgui.schema.json', "sample/*"],
-        'wgui.templates': ['templates/*', 'templates/**/*', 'templates/**/**/*', 'templates/**/**/**/*'],
-        'wgui.static': ['static/*', 'static/**/*', 'static/**/**/*', 'static/**/**/**/*'],
+        'templates': ['templates/*'],
+        'static': ['static/*'],
     },
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
