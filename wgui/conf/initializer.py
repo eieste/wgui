@@ -38,14 +38,14 @@ class ConfigurationInitializer:
         if not pathlib.Path(config.get("config.client_template", mod="get_relative_path")).exists():
             log.debug("Create client_template")
             with pathlib.Path(config.get("config.client_template", mod="get_relative_path")).open("w+") as fobj:
-                fobj.write(pkgutil.get_data("wgui", "sample/client.tpl"))
+                fobj.write(pkgutil.get_data("wgui", "sample/client.tpl").decode('utf8'))
 
         log.debug("Create peer_template")
 
         if not pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).exists():
             log.debug("Create peer_template")
             with pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).open("w+") as fobj:
-                fobj.write(pkgutil.get_data("wgui", "sample/peer.tpl"))
+                fobj.write(pkgutil.get_data("wgui", "sample/peer.tpl").decode('utf8'))
 
     def create_config_yaml(self, config_file):
         config_data = self.get_new_configuration_data()
