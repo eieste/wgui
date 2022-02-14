@@ -102,8 +102,8 @@ class WgUiCommand:
         if options.cmd == "server":
             app = Flask(__name__)
             app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
-            app.config["SECRET_KEY"] = config.get_config("secret_key")
-            app.config["APP_URL"] = config.get_config("app_url")
+            app.config["SECRET_KEY"] = config.get("config.secret_key")
+            app.config["APP_URL"] = config.get("config.app_url")
             apply_saml(config, app)
             apply_routes(config, app)
             # apply_own_saml(get_config, app)

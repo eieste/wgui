@@ -3,6 +3,7 @@ from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 import os
 import random
@@ -30,32 +31,32 @@ class Tunnel:
             "public_key": keypair[1],
             "filename": filename,
             "ip_address": str(available_ip),
-            "address_range": self._config.get_config("range"),
+            "address_range": self._config.get("config.range"),
             "wireguard":
                 {
-                    "endpoint": self._config.get_config("wireguard").get("endpoint"),
-                    "public_key": self._config.get_config("wireguard").get("public_key")
+                    "endpoint": self._config.get("config.wireguard.endpoint"),
+                    "public_key": self._config.get("config.wireguard.public_key")
                 }
         }
         self.generate_config("client", ctx)
         self.generate_config("peer", ctx)
-        self._config.add_client(ctx)
+        self._config.helper.add_client(ctx)
         return ctx
 
     def generate_config(self, name, ctx):
         tpl = self.load_tpl(name)
         conf = tpl.render(ctx)
         log.debug(conf)
-        folder_path = self._config.get_config("{}_folder".format(name))
-        target_path = os.path.join(self._config.get_path_config(folder_path), "{}.conf".format(ctx.get("filename")))
+        folder_path = self._config.get("config.{}_folder".format(name))
+        target_path = os.path.join(self._config.helper.get_path_config(folder_path), "{}.conf".format(ctx.get("filename")))
         log.debug("Write {}".format(target_path))
 
         with open(target_path, "w+") as fobj:
             fobj.write(conf)
 
     def load_tpl(self, name):
-        template_path = self._config.get_config(name + "_template")
-        with open(os.path.join(self._config.get_path_config(template_path)), "r") as fobj:
+        template_path = self._config.get("config.{}_template".format(name))
+        with open(os.path.join(self._config.helper.get_path_config(template_path)), "r") as fobj:
             template = Template(fobj.read())
             return template
 
@@ -65,8 +66,8 @@ class Tunnel:
         return result_str
 
     def find_available_ip_address(self):
-        for possible_host in IPv4Network(self._config.get_config("range")).hosts():
-            if str(possible_host) not in self._config.get_client_ip_addresses():
+        for possible_host in IPv4Network(self._config.get("config.range")).hosts():
+            if str(possible_host) not in self._config.helper.get_client_ip_addresses():
                 log.debug(possible_host)
                 return possible_host
 

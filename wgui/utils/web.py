@@ -27,13 +27,10 @@ def apply_routes(config, app):
                 if client.get("filename") == filename:
                     context["client"] = client
 
-        client_dir = config.get_path_config(config.get_config("client_folder"))
-        peer_dir = config.get_path_config(config.get_config("peer_folder"))
-
-        with open(os.path.join(client_dir, "{}.conf".format(filename))) as fobj:
+        with open(os.path.join(config.get("config.client_folder", mod="get_relative_path"), "{}.conf".format(filename))) as fobj:
             context["client_config"] = fobj.read()
 
-        with open(os.path.join(peer_dir, "{}.conf".format(filename))) as fobj:
+        with open(os.path.join(config.get("config.peer_folder", mod="get_relative_path"), "{}.conf".format(filename))) as fobj:
             context["peer_config"] = fobj.read()
 
         img = qrcode.make(context["client_config"], image_factory=qrcode.image.svg.SvgImage)
@@ -64,7 +61,7 @@ def apply_routes(config, app):
             sp.is_user_logged_in()
         except:
             return redirect(url_for("index"))
-        return render_template("pages/dashboard/index.jinja2", clients=config.get_clients_by_user(auth_data.nameid))
+        return render_template("pages/dashboard/index.jinja2", clients=config.helper.get_clients_by_user(auth_data.nameid))
 
     @app.route("/", methods=["GET"])
     def index():
