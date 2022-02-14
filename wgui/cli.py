@@ -41,7 +41,7 @@ class WgUiCommand:
         """
             Parser add Arguments
         """
-        parser.add_argument("-c", "--config", type=Path, required=True, help="File get_config path")
+        parser.add_argument("-c", "--config", type=Path, help="File get_config path")
         parser.add_argument("-d", "--debug", action="store_true", help="Enable Debug mode")
         parser.add_argument("-v", "--version", action="store_true", help="Display Version")
 
@@ -87,6 +87,8 @@ class WgUiCommand:
             logging.debug("Enable Debug-Mode")
             logging.debug("Input Options {}".format(options.__dict__))
 
+        if options.config is None:
+            raise ValueError("--config is required")
         self.start(parser, options)
 
     def start(self, parser, options):
