@@ -6,6 +6,7 @@ from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 import os
 import random
@@ -47,7 +48,7 @@ class Tunnel:
         return ctx
 
     def apply_config_to_server(self, filename):
-        peer_file = os.path.join(self._config.get("config.peer_folder", mod="get_relative_file"), "{}.conf".format(filename))
+        peer_file = os.path.join(self._config.get("config.peer_folder", mod="get_relative_path"), "{}.conf".format(filename))
         subprocess.check_output(f"wg addconf wg0 {peer_file}", shell=True).decode("utf-8").strip()
 
     def generate_config(self, name, ctx):
