@@ -67,7 +67,7 @@ class Configuration:
         raw_config = Configuration.load_config(path)
         jsonschema.validate(raw_config, Configuration.get_config_schema())
         try:
-            x = raw_config.get("config.wireguard")
+            x = raw_config.get("config").get("wireguard")
             x.get("endpoint")
             x.get("public_key")
         except:
