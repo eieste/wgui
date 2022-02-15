@@ -27,7 +27,7 @@ class ConfigurationHelper:
                 return saml
 
     def add_client(self, ctx):
-        clients = self.config.get("clients", [])
+        clients = self.config.get("clients")
 
         clients.append(
             {

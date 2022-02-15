@@ -20,7 +20,8 @@ class Configuration:
                 "client_folder": "/etc/wireguard/clients",
                 "client_template": "/etc/wgui/client.tpl",
                 "peer_folder": "/etc/wireguard/peers",
-                "peer_template": "/etc/wgui/peer.tpl"
+                "peer_template": "/etc/wgui/peer.tpl",
+                "reserved_ip": []
             },
         "clients": {}
     }
@@ -65,6 +66,13 @@ class Configuration:
         log.debug("Validate Config")
         raw_config = Configuration.load_config(path)
         jsonschema.validate(raw_config, Configuration.get_config_schema())
+        try:
+            x = raw_config.get("config.wireguard")
+            x.get("endpoint")
+            x.get("public_key")
+        except:
+            raise ValueError("Required configuration (wireguard) is missing")
+
         return True
 
     @deprecated
