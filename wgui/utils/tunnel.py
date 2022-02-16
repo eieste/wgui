@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 import logging
 import os
 import random

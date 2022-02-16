@@ -16,4 +16,7 @@ class TunnelPeer(ConfigMixin, WireguardConfigMixin):
 
     def apply_config(self):
         peer_file = os.path.join(self.config.get("config.peer_folder", mod="get_relative_path"), "{}.conf".format(self.filename))
-        subprocess.check_output(f"wg addconf wg0 {peer_file}", shell=True).decode("utf-8").strip()
+        subprocess.check_output(f"wg addconf wg0 {peer_file}; wg syncconf wg0 <(wq-quick strip wg0)", shell=True).decode("utf-8").strip()
+
+    def create_peer_config(self):
+        pass

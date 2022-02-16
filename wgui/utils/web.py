@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 import io
 import os
 
@@ -7,12 +8,21 @@ from flask import flash, redirect, render_template, request, url_for
 import qrcode
 import qrcode.image.svg
 
+import wgui
 from wgui.utils.forms import CreateDeviceForm
 from wgui.utils.saml import sp
 from wgui.utils.tunnel import Tunnel
 
 
 def apply_routes(config, app):
+
+    @app.context_processor
+    def inject_version():
+        return {"version": wgui.__version__}
+
+    @app.context_processor
+    def inject_now():
+        return {'now': datetime.utcnow()}
 
     @app.route("/tunnel/detail/<filename>", methods=["GET"])
     def tunnel_detail(filename):
@@ -34,15 +44,15 @@ def apply_routes(config, app):
         with open(os.path.join(config.get("config.peer_folder", mod="get_relative_path"), "{}.conf".format(filename))) as fobj:
             context["peer_config"] = fobj.read()
 
-        img = qrcode.make("# 10: 10 > wgclient_10.conf \n" + context["client_config"], image_factory=qrcode.image.svg.SvgImage)
+        img = qrcode.make(context["client_config"], image_factory=qrcode.image.svg.SvgImage)
         stream = io.BytesIO()
         img.save(stream)
         stream.seek(0)
         context["qrcode"] = stream.getvalue().decode()
         return render_template('pages/tunnel/detail.jinja2', **context)
 
-    @app.route("/tunnel/create", methods=["GET", "POST"])
-    def tunnel_create():
+    @app.route("/oldtunnel/create", methods=["GET", "POST"])
+    def oldtunnel_create():
         try:
             sp.login_required()
             auth_data = sp.get_auth_data_in_session()
@@ -54,6 +64,22 @@ def apply_routes(config, app):
             client = tun.create(email=auth_data.nameid, device=form.device.data)
             flash('New device created')
             return redirect(url_for('tunnel_detail', filename=client.get("filename")))
+        return render_template('pages/tunnel/new.jinja2', form=form)
+
+    @app.route("/tunnel/create", methods=["GET", "POST"])
+    def tunnel_create():
+        try:
+            sp.login_required()
+            auth_data = sp.get_auth_data_in_session()
+        except:
+            return redirect(url_for("index"))
+        form = CreateDeviceForm(request.form)
+        if request.method == 'POST' and form.validate():
+            # tun = Tunnel(config)
+            # client = tun.create(email=auth_data.nameid, device=form.device.data)
+            flash('New device created')
+            return redirect(url_for("dashboard"))
+            # return redirect(url_for('tunnel_detail', filename=client.get("filename")))
         return render_template('pages/tunnel/new.jinja2', form=form)
 
     @app.route("/dashboard")

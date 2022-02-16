@@ -114,7 +114,6 @@ class WgUiCommand:
             app.config["APP_URL"] = config.get("config.app_url")
             apply_saml(config, app)
             apply_routes(config, app)
-            # apply_own_saml(get_config, app)
             app.run(
                 debug=options.debug,
                 host=options.host,
