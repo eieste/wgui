@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name="wgui",
-    version="0.0.1",
+    version="1.0.0",
     author="Stefan Eiermann",
     author_email="foss@ultraapp.de",
     description=("Simple WG UI"),

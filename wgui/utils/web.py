@@ -65,10 +65,10 @@ def apply_routes(config, app):
             return redirect(url_for("index"))
         return render_template("pages/dashboard/index.jinja2", clients=config.helper.get_clients_by_user(auth_data.nameid))
 
-    @app.route("/logount")
+    @app.route("/logout")
     def logout():
         sp.clear_auth_data_in_session()
-        return redirect("flask_saml2_sp.logout")
+        return redirect(url_for("flask_saml2_sp.logout"))
 
     @app.route("/", methods=["GET"])
     def index():
