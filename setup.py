@@ -20,8 +20,16 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires=[
-        "jsonschema==4.4.0", "qrcode==7.3.1", "pyyaml==6.0", "Jinja2==3.0.3", "flask==2.0.2", "pillow==9.0.1", "flask-saml2==0.3.0",
-        "Flask-WTF==1.0.0", "pytest-mock==3.7.0"
+        "jsonschema==4.4.0",
+        "qrcode==7.3.1",
+        "pyyaml==6.0",
+        "Jinja2==3.0.3",
+        "flask==2.0.2",
+        "pillow==9.0.1",
+        # "flask-saml2==0.3.0",
+        "Flask-WTF==1.0.0",
+        "pytest-mock==3.7.0",
+        "git+https://github.com/eieste/flask-saml2.git@master"
     ],
     package_data={
         '':
