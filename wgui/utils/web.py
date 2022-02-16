@@ -18,6 +18,7 @@ def apply_routes(config, app):
     def tunnel_detail(filename):
         context = {}
         try:
+            sp.login_required()
             auth_data = sp.get_auth_data_in_session()
         except:
             return redirect(url_for("index"))
@@ -43,6 +44,7 @@ def apply_routes(config, app):
     @app.route("/tunnel/create", methods=["GET", "POST"])
     def tunnel_create():
         try:
+            sp.login_required()
             auth_data = sp.get_auth_data_in_session()
         except:
             return redirect(url_for("index"))
@@ -57,11 +59,16 @@ def apply_routes(config, app):
     @app.route("/dashboard")
     def dashboard():
         try:
+            sp.login_required()
             auth_data = sp.get_auth_data_in_session()
-            sp.is_user_logged_in()
         except:
             return redirect(url_for("index"))
         return render_template("pages/dashboard/index.jinja2", clients=config.helper.get_clients_by_user(auth_data.nameid))
+
+    @app.route("/logount")
+    def logout():
+        sp.clear_auth_data_in_session()
+        return redirect("flask_saml2_sp.logout")
 
     @app.route("/", methods=["GET"])
     def index():
