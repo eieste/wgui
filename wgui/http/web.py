@@ -1,28 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
 import io
 import os
 
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, g, redirect, render_template, request, url_for
 import qrcode
 import qrcode.image.svg
 
-import wgui
-from wgui.utils.forms import CreateDeviceForm
-from wgui.utils.saml import sp
+from wgui.http.forms import CreateDeviceForm
+from wgui.saml.saml import sp
 from wgui.utils.tunnel import Tunnel
+from wgui.wireguard.person import Person
 
 
 def apply_routes(config, app):
-
-    @app.context_processor
-    def inject_version():
-        return {"version": wgui.__version__}
-
-    @app.context_processor
-    def inject_now():
-        return {'now': datetime.utcnow()}
 
     @app.route("/tunnel/detail/<filename>", methods=["GET"])
     def tunnel_detail(filename):
@@ -75,6 +66,8 @@ def apply_routes(config, app):
             return redirect(url_for("index"))
         form = CreateDeviceForm(request.form)
         if request.method == 'POST' and form.validate():
+            person = Person.get_or_create(config, g.person_list, auth_data.nameid)[0]
+            person.create_device(form.device.data)
             # tun = Tunnel(config)
             # client = tun.create(email=auth_data.nameid, device=form.device.data)
             flash('New device created')

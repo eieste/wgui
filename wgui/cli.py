@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import argparse
 import logging
 from pathlib import Path
@@ -11,9 +12,10 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 import wgui
 from wgui.conf.config import Configuration
 from wgui.conf.initializer import ConfigurationInitializer
-from wgui.utils.saml import apply_saml
+from wgui.http.web import apply_routes
+from wgui.http.web_essentials import apply_essential
+from wgui.saml.saml import apply_saml
 from wgui.utils.tunnel import Tunnel
-from wgui.utils.web import apply_routes
 
 log = logging.getLogger(__name__)
 
@@ -109,11 +111,14 @@ class WgUiCommand:
 
         if options.cmd == "server":
             app = Flask(__name__)
+
             app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
             app.config["SECRET_KEY"] = config.get("config.secret_key")
-            app.config["APP_URL"] = config.get("config.app_url")
+
+            apply_essential(config, app)
             apply_saml(config, app)
             apply_routes(config, app)
+
             app.run(
                 debug=options.debug,
                 host=options.host,

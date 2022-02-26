@@ -3,13 +3,13 @@
 {% block head_inner %}
     {{ super() }}
     <link rel="stylesheet" href="/static/css/tailwind.css"/>
+    <script defer src="/static/vendor/alpine.js"></script>
+    <script defer src="/static/js/avatar.js"/></script>
 {% endblock %}
 
 {% block body_inner %}
-    {#    {% include "components/flash.jinja2" %}#}
+    {% include "components/flash.jinja2" %}
     <div>
-        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
         <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-200">
             {% include "components/sidebar.jinja2" %}
             <div class="flex-1 flex flex-col overflow-hidden">
@@ -22,7 +22,7 @@
                         {% endblock %}
                     </div>
                 </main>
-                {#                {% include "components/footer.jinja2" %}#}
+                {% include "components/footer.jinja2" %}
             </div>
         </div>
     </div>
