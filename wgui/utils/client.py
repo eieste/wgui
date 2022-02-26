@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+
 class Client:
 
     def __init__(self, person, device_name, filename, ip_address, public_key, private_key):

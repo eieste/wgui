@@ -29,7 +29,7 @@ setup(
         # "flask-saml2==0.3.0",
         "Flask-WTF==1.0.0",
         "pytest-mock==3.7.0",
-        "git+https://github.com/eieste/flask-saml2.git@master"
+        # "git+https://github.com/eieste/flask-saml2.git@master"
     ],
     package_data={
         '':

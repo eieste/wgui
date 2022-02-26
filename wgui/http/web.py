@@ -3,32 +3,27 @@
 import io
 import os
 
-from flask import flash, redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for
 import qrcode
 import qrcode.image.svg
 
+from wgui.contrib.decorators import login_required
 from wgui.http.forms import CreateDeviceForm
 from wgui.saml.saml import sp
-from wgui.utils import get_person
 from wgui.utils.cmd import get_peer_states
-from wgui.utils.tunnel import Tunnel
 
 
 def apply_routes(config, app):
 
     @app.route("/tunnel/detail/<filename>", methods=["GET"])
-    def tunnel_detail(filename):
+    @login_required
+    def tunnel_detail(filename, person=None):
+        if person is None:
+            raise RuntimeError("Impossible error")
         context = {}
-        try:
-            sp.login_required()
-            auth_data = sp.get_auth_data_in_session()
-        except:
-            return redirect(url_for("index"))
+        client = person.get_client_by_filename(filename)
 
-        for client in config.configuration.get("clients"):
-            if client.get("email") == auth_data.nameid:
-                if client.get("filename") == filename:
-                    context["client"] = client
+        context["client"] = client
 
         with open(os.path.join(config.get("config.client_folder", mod="get_relative_path"), "{}.conf".format(filename))) as fobj:
             context["client_config"] = fobj.read()
@@ -43,28 +38,11 @@ def apply_routes(config, app):
         context["qrcode"] = stream.getvalue().decode()
         return render_template('pages/tunnel/detail.jinja2', **context)
 
-    @app.route("/oldtunnel/create", methods=["GET", "POST"])
-    def oldtunnel_create():
-        try:
-            sp.login_required()
-            auth_data = sp.get_auth_data_in_session()
-        except:
-            return redirect(url_for("index"))
-        form = CreateDeviceForm(request.form)
-        if request.method == 'POST' and form.validate():
-            tun = Tunnel(config)
-            client = tun.create(email=auth_data.nameid, device=form.device.data)
-            flash('New device created')
-            return redirect(url_for('tunnel_detail', filename=client.get("filename")))
-        return render_template('pages/tunnel/new.jinja2', form=form)
-
     @app.route("/tunnel/create", methods=["GET", "POST"])
-    def tunnel_create():
-        try:
-            sp.login_required()
-            auth_data = sp.get_auth_data_in_session()
-        except:
-            return redirect(url_for("index"))
+    @login_required
+    def tunnel_create(person=None):
+        if person is None:
+            raise RuntimeError("Impossible error")
         form = CreateDeviceForm(request.form)
         if request.method == 'POST' and form.validate():
             print("OK")
@@ -72,13 +50,10 @@ def apply_routes(config, app):
         return render_template('pages/tunnel/new.jinja2', form=form)
 
     @app.route("/dashboard")
-    def dashboard():
-        try:
-            sp.login_required()
-            auth_data = sp.get_auth_data_in_session()
-        except:
-            return redirect(url_for("index"))
-        person = get_person(config, auth_data.nameid)
+    @login_required
+    def dashboard(person=None):
+        if person is None:
+            raise RuntimeError("Impossible Error")
 
         return render_template("pages/dashboard/index.jinja2", person=person)
 
@@ -87,16 +62,24 @@ def apply_routes(config, app):
         sp.clear_auth_data_in_session()
         return redirect(url_for("flask_saml2_sp.logout"))
 
-    @app.route("/api/wireguard", methods=["GET"])
-    def api_wireguard():
-        try:
-            sp.login_required()
-            auth_data = sp.get_auth_data_in_session()
-        except:
-            return redirect(url_for("index"))
-        person = get_person(config, auth_data.nameid)
-        get_peer_states()
-        return {"clients": {client.filename: client.parse_dump() for client in person.clients}}
+    @app.route("/api/wireguard", methods=["POST"])
+    @login_required
+    def api_wireguard(person=None):
+        if person is None:
+            raise RuntimeError("Impossible Error")
+
+        requested_clients = request.json.get("clients")
+        if not person.has_clients(*requested_clients):
+            return redirect(url_for("logout"))
+
+        peers = get_peer_states()
+        clients = {}
+        for client in person.clients:
+            result = [peer for peer in peers if client.public_key == peer.public_key]
+            if len(result) == 1 and client.filename in requested_clients:
+                remote_peer = result[0]
+                clients[client.filename] = remote_peer._asdict()
+        return {"clients": clients}
 
     @app.route("/", methods=["GET"])
     def index():

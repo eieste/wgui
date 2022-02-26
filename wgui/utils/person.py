@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
+import logging
+
 import yaml
+
+from wgui.utils.client import Client
+
+log = logging.getLogger(__name__)
 
 
 def load_person_file(config):
@@ -18,7 +24,7 @@ def get_person(config, email):
 class Person:
 
     def __init__(self, email):
-        self._email = email
+        self.email = email
         self.clients = []
 
     def add_client(self, client):
@@ -27,5 +33,21 @@ class Person:
     @staticmethod
     def load(data):
         person = Person(data.get("email"))
-        [person.add_client(client) for client in data.get("clients")]
+        [person.add_client(Client.load(person, client)) for client in data.get("clients")]
         return person
+
+    def get_client_by_filename(self, filename):
+        for client in self.clients:
+            if filename == client.filename:
+                return client
+        return False
+
+    def has_clients(self, *clients):
+        for client in clients:
+            exist = False
+            if self.get_client_by_filename(client):
+                exist = True
+            if not exist:
+                log.error(f"Cant find client {client} at logged in Person {self.email}")
+                return False
+        return True

@@ -8,6 +8,7 @@
             {% for client in person.clients %}
                 {% include "components/client_card.jinja2" %}
             {% endfor %}
+
             {##}
             {#            <div class="flex items-center px-5 py-6 shadow-sm rounded-md bg-white">#}
             {#                <div class="p-3 rounded-full bg-indigo-600 bg-opacity-75">#}
@@ -58,4 +59,11 @@
         </div>
 
     </div>
+{% endblock %}
+
+
+
+{% block body_inner %}
+    {{ super() }}
+    <script type="text/javascript" src="static/js/dashboard.js"></script>
 {% endblock %}

@@ -1,0 +1,1 @@
+Please ensure there are an email field at attributes object in saml request
