@@ -3,8 +3,8 @@ import yaml
 
 
 def load_person_file(config):
-    with open(config.person_file, "r") as fobj:
-        return yaml.load(fobj)
+    with open(config.get("config.person_file"), "r") as fobj:
+        return yaml.load(fobj, Loader=yaml.SafeLoader)
 
 
 def get_person(config, email):
@@ -12,4 +12,20 @@ def get_person(config, email):
 
     for person in person_data.get("persons"):
         if person.get("email") == email:
-            return person
+            return Person.load(person)
+
+
+class Person:
+
+    def __init__(self, email):
+        self._email = email
+        self.clients = []
+
+    def add_client(self, client):
+        self.clients.append(client)
+
+    @staticmethod
+    def load(data):
+        person = Person(data.get("email"))
+        [person.add_client(client) for client in data.get("clients")]
+        return person

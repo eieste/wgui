@@ -37,6 +37,11 @@
         "wireguard": {
           "type": "object",
           "properties": {
+            "interface": {
+              "type": "string",
+              "default": "wg0",
+              "description": "Wireguard Interface Name"
+            },
             "public_key": {
               "type": "string"
             },

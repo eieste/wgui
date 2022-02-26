@@ -3,14 +3,15 @@
 import io
 import os
 
-from flask import flash, g, redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request, url_for
 import qrcode
 import qrcode.image.svg
 
 from wgui.http.forms import CreateDeviceForm
 from wgui.saml.saml import sp
+from wgui.utils import get_person
+from wgui.utils.cmd import get_peer_states
 from wgui.utils.tunnel import Tunnel
-from wgui.wireguard.person import Person
 
 
 def apply_routes(config, app):
@@ -66,13 +67,8 @@ def apply_routes(config, app):
             return redirect(url_for("index"))
         form = CreateDeviceForm(request.form)
         if request.method == 'POST' and form.validate():
-            person = Person.get_or_create(config, g.person_list, auth_data.nameid)[0]
-            person.create_device(form.device.data)
-            # tun = Tunnel(config)
-            # client = tun.create(email=auth_data.nameid, device=form.device.data)
-            flash('New device created')
-            return redirect(url_for("dashboard"))
-            # return redirect(url_for('tunnel_detail', filename=client.get("filename")))
+            print("OK")
+
         return render_template('pages/tunnel/new.jinja2', form=form)
 
     @app.route("/dashboard")
@@ -82,12 +78,25 @@ def apply_routes(config, app):
             auth_data = sp.get_auth_data_in_session()
         except:
             return redirect(url_for("index"))
-        return render_template("pages/dashboard/index.jinja2", clients=config.helper.get_clients_by_user(auth_data.nameid))
+        person = get_person(config, auth_data.nameid)
+
+        return render_template("pages/dashboard/index.jinja2", person=person)
 
     @app.route("/logout")
     def logout():
         sp.clear_auth_data_in_session()
         return redirect(url_for("flask_saml2_sp.logout"))
+
+    @app.route("/api/wireguard", methods=["GET"])
+    def api_wireguard():
+        try:
+            sp.login_required()
+            auth_data = sp.get_auth_data_in_session()
+        except:
+            return redirect(url_for("index"))
+        person = get_person(config, auth_data.nameid)
+        get_peer_states()
+        return {"clients": {client.filename: client.parse_dump() for client in person.clients}}
 
     @app.route("/", methods=["GET"])
     def index():

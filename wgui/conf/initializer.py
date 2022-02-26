@@ -97,16 +97,18 @@ class ConfigurationInitializer:
 
     def get_new_configuration_data(self):
         config_option = [
-            ConfigQuestion("app_url", "URL of used for Webinterface: ", str_validator(), default="vpn.local"),
-            ConfigQuestion("wg_endpoint", "Wireguard Endpoint domain (with port): ", str_validator(), default="vpn.local:58120"),
-            ConfigQuestion("wg_public_key", "Wireguard Server Public Key: ", str_validator()),
-            ConfigQuestion("wg_ip_range", "IP-Range used for Peers: ", str_validator(), default="192.168.0.0/24"),
+            ConfigQuestion("app_url", "URL of used for Webinterface", str_validator(), default="vpn.local"),
+            ConfigQuestion("wg_endpoint", "Wireguard Endpoint domain (with port)", str_validator(), default="vpn.local:58120"),
+            ConfigQuestion("wg_public_key", "Wireguard Server Public Key", str_validator()),
+            ConfigQuestion("wg_ip_range", "IP-Range used for Peers", str_validator(), default="192.168.0.0/24"),
+            ConfigQuestion("wg_interface", "Wireguard Interface", str_validator(), default="wg0"),
             ConfigQuestion(
-                "reserved_ip",
+                "wg_reserved_ip",
                 "Wireguard Gateway IP: ",
                 str_validator(),
                 default="192.168.0.1,192.168.0.2,192.168.0.3,192.168.0.4,192.168.0.5"),
-            ConfigQuestion("config_prefix", "Path Prefix where the wgui configuration should be stored", default="/etc/wgui/")
+            ConfigQuestion(
+                "config_prefix", "Path Prefix where the wgui configuration should be stored", default="/etc/wgui/", only_from_env=True)
         ]
 
         user_config = {}
@@ -121,7 +123,8 @@ class ConfigurationInitializer:
                             "endpoint": user_config.get("wg_endpoint"),
                             "ip_range": user_config.get("wg_ip_range"),
                             "public_key": user_config.get("wg_public_key"),
-                            "reserved_ip": [user_config.get("reserved_ip")]
+                            "reserved_ip": [user_config.get("wg_reserved_ip").split(",")],
+                            "interface": [user_config.get("wg_interface")]
                         },
                     "client_folder": "/etc/wireguard/clients",
                     "peer_folder": "/etc/wireguard/peers",

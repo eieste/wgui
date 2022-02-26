@@ -5,7 +5,6 @@ import logging
 import pathlib
 import pkgutil
 
-from flask import g
 import jsonschema
 import yaml
 
@@ -30,16 +29,9 @@ class Configuration:
 
     def __init__(self, options=None):
         self._options = options
+        Configuration.validate(self._options.config)
+        self.configuration = Configuration.load_config(self._options.config)
         self.helper = ConfigurationHelper(self)
-
-    @property
-    def configuration(self):
-        try:
-            if g.config is not None:
-                return g.config
-        except RuntimeError:
-            Configuration.validate(self._options.config)
-            return Configuration.load_config(self._options.config)
 
     @staticmethod
     @functools.lru_cache(maxsize=128)

@@ -5,17 +5,8 @@
 
     <div class="mt-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {{ abc }}
-            {% for client in clients %}
-                <a class="flex items-center px-5 py-6 shadow-sm rounded-md bg-white"
-                   href="{{ url_for("tunnel_detail",  filename=client.filename) }}">
-                    <div class="p-3 rounded-full bg-indigo-600 bg-opacity-75">
-                    </div>
-                    <div class="mx-5">
-                        <h4 class="text-2xl font-semibold text-gray-700">{{ client.device_name }}</h4>
-                        <div class="text-gray-500">{{ client.user }}</div>
-                    </div>
-                </a>
+            {% for client in person.clients %}
+                {% include "components/client_card.jinja2" %}
             {% endfor %}
             {##}
             {#            <div class="flex items-center px-5 py-6 shadow-sm rounded-md bg-white">#}
