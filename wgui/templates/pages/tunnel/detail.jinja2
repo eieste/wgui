@@ -2,70 +2,77 @@
 
 {% block content_inner %}
     <h3 class="text-gray-700 text-3xl font-medium">Device: {{ client.device }}</h3>
-    <div class="mt-4">
-
+    <div class="mt-4 wgpeer" data-fname="{{ client.filename }}">
 
         <div class="grid grid-cols-2 gap-2">
 
-            <div class="shadow-sm rounded-md bg-white col-span-2">
-                <div class="relative float-left    ">
+            <div class="shadow-sm rounded-md bg-white col-span-2 flex flex-wrap">
+                <div class="m-4 flex-initial w-72">
                     {{ qrcode }}
                 </div>
-                <div class="relative float-left    ">
+                <div class="m-4 col-span-4 flex-grow max-w-72 ">
                     <div class="font-bold text-xl mb-2">Meta</div>
-                    <table>
-                        <tr>
-                            <td>
-                                Device
-                            </td>
-                            <td>
-                                {{ client.device }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                User
-                            </td>
-                            <td>
-                                {{ client.email }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                IP-Address
-                            </td>
-                            <td>
-                                {{ client.ip_address }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Filename
-                            </td>
-                            <td>
-                                {{ client.filename }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Public Key
-                            </td>
-                            <td>
-                                {{ client.public_key }}
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="grid grid-cols-12 auto-cols-max gap-2">
+
+                        <div class="font-bold max-w-fit col-span-3 ">
+                            Device
+                        </div>
+                        <div class="text-clip overflow-x-auto col-span-9">
+                            {{ client.device_name }}
+                        </div>
+                        <div class="font-bold max-w-fit col-span-3">
+                            User
+                        </div>
+                        <div class="text-clip overflow-x-auto col-span-9">
+                            {{ person.email }}
+                        </div>
+                        <div class="font-bold max-w-fit col-span-3 ">
+                            IP-Address
+                        </div>
+                        <div class="text-clip overflow-x-auto col-span-9">
+                            {{ client.ip_address }}
+                        </div>
+                        <div class="font-bold max-w-fit col-span-3 ">
+                            Filename
+                        </div>
+                        <div class="text-clip overflow-x-auto col-span-9">
+                            {{ client.filename }}
+                        </div>
+                        <div class="font-bold max-w-fit col-span-3 ">
+                            Public Key
+                        </div>
+                        <div class="text-clip overflow-x-auto col-span-9">
+                            {{ client.public_key }}
+                        </div>
+                    </div>
+                </div>
+                <div class="m-4 flex-1">
+                    <div class=" font-bold text-xl mb-2
+                ">Statistic
+                    </div>
+                    <div class="grid grid-cols-2 w-64 my-2 h-full">
+                        <div>
+                            {% include "components/rxtx_graph.jinja2" %}
+                        </div>
+                        <div>
+                            <span class="text-bold">RX Download</span>
+                            <div class="rxvalue"></div>
+                            <span class="text-bold">TX Upload</span>
+                            <div class="txvalue"></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <div class="px-5 py-6 shadow-sm rounded-md bg-white">
+            <div class="px-5 py-6 shadow-sm rounded-md bg-white col-span-2 md:col-span-1">
                 <div class="font-bold text-xl mb-2">Config</div>
                 <pre class="relative overflow-x-auto">
 {{ client_config }}
                 </pre>
             </div>
 
-            <div class="px-5 py-6 shadow-sm rounded-md bg-white">
+            <div class="px-5 py-6 shadow-sm rounded-md bg-white col-span-2 md:col-span-1">
                 <div class="font-bold text-xl mb-2">Peer</div>
                 <pre class="relative overflow-x-auto">
 {{ peer_config }}
@@ -73,4 +80,10 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+
+{% block body_inner %}
+    {{ super() }}
+    <script type="text/javascript" src="/static/js/statistic.js"></script>
 {% endblock %}
