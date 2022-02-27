@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 import pathlib
 
@@ -15,13 +16,6 @@ class ConfigurationHelper:
 
     def __init__(self, config):
         self.config = config
-
-    def get_clients_by_user(self, email):
-        client_list = []
-        for client in self.config.get("clients"):
-            if client.get("email") == email:
-                client_list.append(client)
-        return client_list
 
     def get_saml_idp_by_slug(self, slug):
         for saml in self.config.get("config.saml.id_providers"):

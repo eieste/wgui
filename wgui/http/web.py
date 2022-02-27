@@ -60,6 +60,7 @@ def apply_routes(config, app):
             raise RuntimeError("Impossible error")
         form = CreateDeviceForm(request.form)
         if request.method == 'POST' and form.validate():
+            person.create_device(form.device.data)
             print("OK")
 
         return render_template('pages/tunnel/new.jinja2', form=form)
