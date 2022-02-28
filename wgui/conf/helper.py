@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 from ipaddress import IPv4Network
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 import logging
 import pathlib
 
@@ -25,7 +22,7 @@ class ConfigurationHelper:
 
     @deprecated
     def add_client(self, ctx):
-        clients = self.config.get("clients", [])
+        clients = self.config.get("clients")
 
         clients.append(
             {

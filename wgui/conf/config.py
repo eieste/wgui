@@ -24,7 +24,8 @@ class Configuration:
                 "peer_template": "/etc/wgui/peer.tpl",
                 "person_file": "/etc/wgui/person.yml",
                 "wireguard": {
-                    "interface": "wg0"
+                    "interface": "wg0",
+                    "reserved_ip": []
                 }
             },
         "clients": {}
@@ -71,6 +72,13 @@ class Configuration:
         log.debug("Validate Config")
         raw_config = Configuration.load_config(path)
         jsonschema.validate(raw_config, Configuration.get_config_schema())
+        try:
+            x = raw_config.get("config").get("wireguard")
+            x.get("endpoint")
+            x.get("public_key")
+        except:
+            raise ValueError("Required configuration (wireguard) is missing")
+
         return True
 
     @deprecated
