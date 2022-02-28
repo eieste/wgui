@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+import logging
 import subprocess
 from typing import NamedTuple, Optional, Tuple
 
 from wgui.http.flask import cache
+
+log = logging.getLogger(__name__)
 
 
 class RemotePeer(NamedTuple):
@@ -37,3 +40,10 @@ def get_peer_states():
     wg_out = subprocess.check_output(["wg", "show", "all", "dump"]).decode("utf8")
     rows = [l.split("\t") for l in wg_out.split("\n")]
     return [RemotePeer.parse(*row) for row in rows if len(row) > 5]
+
+
+def apply_to_wireguard(peer_file, config):
+    # wg syncconf ${WGNET} <(wg-quick strip ${WGNET})
+    interface = config.get("config.wireguard.interface")
+    output = subprocess.check_output(f"wg addconf {interface} {peer_file}", shell=True).decode("utf-8").strip()
+    log.debug(output)

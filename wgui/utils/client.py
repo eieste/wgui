@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
+import os
 
 from wgui.mixins.wireguard import WireguardConfigMixin
+from wgui.utils.cmd import apply_to_wireguard
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +27,7 @@ class Client(WireguardConfigMixin):
             "public_key": self.public_key,
             "private_key": self.private_key,
             "filename": self.filename,
-            "ip_address": self.ip_address
+            "ip_address": str(self.ip_address)
         }
 
     @staticmethod
@@ -44,6 +47,8 @@ class Client(WireguardConfigMixin):
         keypair = cls.generate_wireguard_keys()
         filename = cls.generate_filename()
 
+        client = cls(person, device_name, filename, ip_address, keypair.public_key, keypair.private_key)
+
         ctx = {
             "person": person,
             "device_name": device_name,
@@ -51,11 +56,29 @@ class Client(WireguardConfigMixin):
             "public_key": keypair[1],
             "filename": filename,
             "ip_address": str(ip_address),
+            "wireguard":
+                {
+                    "public_key": person.config.get("config.wireguard.public_range"),
+                    "ip_range": person.config.get("config.wireguard.ip_range"),
+                    "endpoint": person.config.get("config.wireguard.endpoint")
+                },
             "config": person.config,
         }
-        cls.generate_config("client", ctx)
-        cls.generate_config("peer", ctx)
-        # apply_to_wireguard(filename)
+
+        peer_target_path = os.path.join(person.config.get("config.peer_folder", mod="get_relative_path"), "{}.conf".format(filename))
+
+        peer_source_path = person.config.get("config.peer_template", mod="get_relative_path")
+
+        cls.generate_config(peer_source_path, peer_target_path, ctx)
+
+        client_target_path = os.path.join(person.config.get("config.client_folder", mod="get_relative_path"), "{}.conf".format(filename))
+
+        client_source_path = person.config.get("config.client_template", mod="get_relative_path")
+
+        cls.generate_config(client_source_path, client_target_path, ctx)
+
+        apply_to_wireguard(peer_target_path, person.config)
+        return client
 
     @classmethod
     def find_available_ip(cls, network, occupied_ip_addresses):

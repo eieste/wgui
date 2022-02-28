@@ -18,8 +18,8 @@ class WireguardKeypair(NamedTuple):
 class WireguardConfigMixin:
 
     @staticmethod
-    def generate_config(self, source_path, target_path, ctx):
-        tpl = self.load_tpl(source_path)
+    def generate_config(source_path, target_path, ctx):
+        tpl = WireguardConfigMixin.load_tpl(source_path)
         conf = tpl.render(ctx)
         log.debug("Write {}".format(target_path))
         with open(target_path, "w+") as fobj:
@@ -44,6 +44,6 @@ class WireguardConfigMixin:
             Requires that the 'wireguard' command is available on PATH
             Returns (private_key, public_key), both strings
         """
-        privkey = subprocess.check_output("wireguard genkey", shell=True).decode("utf-8").strip()
-        pubkey = subprocess.check_output(f"echo '{privkey}' | wireguard pubkey", shell=True).decode("utf-8").strip()
+        privkey = subprocess.check_output("wg genkey", shell=True).decode("utf-8").strip()
+        pubkey = subprocess.check_output(f"echo '{privkey}' | wg pubkey", shell=True).decode("utf-8").strip()
         return WireguardKeypair(private_key=privkey, public_key=pubkey)

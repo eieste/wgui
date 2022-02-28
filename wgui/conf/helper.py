@@ -2,6 +2,7 @@
 from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 import pathlib
 
@@ -22,6 +23,7 @@ class ConfigurationHelper:
             if saml.get("slug") == slug:
                 return saml
 
+    @deprecated
     def add_client(self, ctx):
         clients = self.config.get("clients", [])
 
@@ -43,12 +45,14 @@ class ConfigurationHelper:
             # fobj.seek(0)
             # yaml.dump(conf, fobj)
 
+    @deprecated
     def get_client_ip_addresses(self):
         ip_address_list = []
         for client in self.config.get("clients"):
             ip_address_list.append(client.get("ip_address"))
         return ip_address_list
 
+    @deprecated
     def find_available_ip_address(self):
         for possible_host in IPv4Network(self.config.get("config.wireguard.ip_range")).hosts():
             if str(possible_host) not in self.config.helper.get_client_ip_addresses() and str(possible_host) not in self.config.get(
@@ -61,13 +65,16 @@ class ConfigurationHelper:
         log.debug("Config-FilePath: {}".format(p))
         return p
 
+    @deprecated
     def get_relative_path(self, target_path):
         return get_relative_path(self.config._options.config, target_path)
 
+    @deprecated
     def update(self):
         log.info("re-Write config ")
 
 
+@deprecated
 def get_relative_path(origin_path, target_path):
     p = pathlib.Path(origin_path).parent.resolve().joinpath(target_path)
     log.debug("Config-FilePath: {}".format(p))

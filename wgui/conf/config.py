@@ -22,7 +22,10 @@ class Configuration:
                 "client_template": "/etc/wgui/client.tpl",
                 "peer_folder": "/etc/wireguard/peers",
                 "peer_template": "/etc/wgui/peer.tpl",
-                "database_uri": "sqlite:////etc/wgui/users.db"
+                "person_file": "/etc/wgui/person.yml",
+                "wireguard": {
+                    "interface": "wg0"
+                }
             },
         "clients": {}
     }

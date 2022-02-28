@@ -58,7 +58,7 @@ class Person:
         return {"email": self.email, "clients": [client.as_dict() for client in self.clients]}
 
     def _save(self):
-        with open(self.config.get("person_file"), "rw+") as fobj:
+        with open(self.config.get("config.person_file"), "r+") as fobj:
             data = yaml.load(fobj, Loader=yaml.SafeLoader)
             person_data = []
             for person in data.get("persons"):
