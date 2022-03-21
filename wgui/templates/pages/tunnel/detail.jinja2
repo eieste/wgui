@@ -1,7 +1,7 @@
 {% extends "base.jinja2" %}
 
 {% block content_inner %}
-    <h3 class="text-gray-700 text-3xl font-medium">Device: {{ client.device }}</h3>
+    <h3 class="text-gray-700 text-3xl font-medium">Device {{ client.device_name }}</h3>
     <div class="mt-4 wgpeer" data-fname="{{ client.filename }}">
 
         <div class="grid grid-cols-2 gap-2">
@@ -43,6 +43,13 @@
                         </div>
                         <div class="text-clip overflow-x-auto col-span-9">
                             {{ client.public_key }}
+                        </div>
+                        <div class="font-bold max-w-fit col-span-3 ">
+
+                        </div>
+                        <div class="text-clip overflow-x-auto col-span-9">
+                            <a href="{{ url_for("tunnel_download", filename=client.filename) }}">Download
+                                Configuration</a>
                         </div>
                     </div>
                 </div>

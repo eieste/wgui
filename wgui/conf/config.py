@@ -23,6 +23,7 @@ class Configuration:
                 "peer_folder": "/etc/wireguard/peers",
                 "peer_template": "/etc/wgui/peer.tpl",
                 "person_file": "/etc/wgui/person.yml",
+                "allow_signup": True,
                 "wireguard": {
                     "interface": "wg0",
                     "reserved_ip": []

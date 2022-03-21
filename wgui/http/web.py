@@ -2,7 +2,15 @@
 
 import os
 
-from flask import abort, flash, redirect, render_template, request, url_for
+from flask import (
+    abort,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    url_for,
+)
 import qrcode
 import qrcode.image.svg
 
@@ -24,10 +32,24 @@ def apply_routes(config, app):
         context["person"] = person
         context["client"] = client
         if request.method == 'POST':
-            flash("Cant delete Device")
+            client = person.get_client_by_filename(filename)
+            client.delete()
+            flash("Device successfully deleted")
             return redirect(url_for("dashboard"))
 
         return render_template("pages/tunnel/delete.jinja2", **context)
+
+    @app.route("/tunnel/download/<filename>", methods=["GET"])
+    @login_required
+    def tunnel_download(filename, person=None):
+        if person is None:
+            raise RuntimeError("Impossible error")
+        context = {}
+        client = person.get_client_by_filename(filename)
+        if not client:
+            raise abort(403, description="Insufficient Permission")
+        client_file = os.path.join(config.get("config.client_folder", mod="get_relative_path"), "{}.conf".format(filename))
+        return send_file(client_file, as_attachment=True)
 
     @app.route("/tunnel/detail/<filename>", methods=["GET"])
     @login_required
@@ -56,14 +78,15 @@ def apply_routes(config, app):
     @app.route("/tunnel/create", methods=["GET", "POST"])
     @login_required
     def tunnel_create(person=None):
+        context = {"person": person}
         if person is None:
             raise RuntimeError("Impossible error")
         form = CreateDeviceForm(request.form)
+        context["form"] = form
         if request.method == 'POST' and form.validate():
-            person.create_device(form.device.data)
-            print("OK")
-
-        return render_template('pages/tunnel/new.jinja2', form=form)
+            client = person.create_device(form.device.data)
+            return redirect(url_for("tunnel_detail", filename=client.filename))
+        return render_template('pages/tunnel/new.jinja2', **context)
 
     @app.route("/dashboard")
     @login_required
@@ -93,6 +116,8 @@ def apply_routes(config, app):
 
         peers = get_peer_states()
         clients = {}
+        if len(peers) <= 0:
+            return {"clients": clients, "max_rx": 0, "max_tx": 0}
         max_values = {"rx": [max(peer.transfer_rx for peer in peers)], "tx": [max(peer.transfer_tx for peer in peers)]}
 
         for client in person.clients:

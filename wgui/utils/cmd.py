@@ -42,8 +42,27 @@ def get_peer_states():
     return [RemotePeer.parse(*row) for row in rows if len(row) > 5]
 
 
-def apply_to_wireguard(peer_file, config):
+def apply_to_wireguard(peer_file, interface):
     # wg syncconf ${WGNET} <(wg-quick strip ${WGNET})
-    interface = config.get("config.wireguard.interface")
     output = subprocess.check_output(f"wg addconf {interface} {peer_file}", shell=True).decode("utf-8").strip()
     log.debug(output)
+    # refresh_wireguard(interface)
+
+
+def remove_from_wireguard(peer_id, interface):
+    output = subprocess.check_output(f"wg set {interface} peer {peer_id} remove", shell=True).decode("utf-8").strip()
+    log.debug(output)
+    refresh_wireguard(interface)
+
+
+def refresh_wireguard(interface):
+    # wg syncconf ${WGNET} <(wg-quick strip ${WGNET})
+
+    try:
+        output = subprocess.check_output(
+            ["wg", "syncconf", interface, f"<(wq-quick strip {interface})"], stderr=subprocess.STDOUT, shell=True).decode("utf-8").strip()
+        log.debug(output)
+    except subprocess.CalledProcessError as e:
+        log.debug(e.output)
+        log.exception(e)
+        raise e

@@ -3,11 +3,11 @@ import functools
 import logging
 import warnings
 
-from flask import abort, current_app
+from flask import abort, current_app, flash
 
 from wgui.contrib.validators import validate_email
 from wgui.saml.saml import sp
-from wgui.utils.person import get_person
+from wgui.utils.person import get_person, Person
 
 log = logging.getLogger(__name__)
 
@@ -42,6 +42,12 @@ def login_required(func):
             abort(403, description="Resource not found")
         else:
             person = get_person(config, auth_data.attributes.get("email"))
+            if person is None:
+                if config.get("config.allow_signup"):
+                    person = Person.create(config, auth_data.attributes.get("email"))
+                else:
+                    flash("User is not allowed to use this app. Please contact your Administrator")
+                    abort(403, description="User is not allowed to use this app. Please contact your Administrator")
             return func(*args, person=person, **kwargs)
 
     return wrapper

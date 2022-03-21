@@ -2,11 +2,12 @@
 from ipaddress import IPv4Network
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 import os
 
 from wgui.mixins.wireguard import WireguardConfigMixin
-from wgui.utils.cmd import apply_to_wireguard
+from wgui.utils.cmd import apply_to_wireguard, remove_from_wireguard
 
 log = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ class Client(WireguardConfigMixin):
             "ip_address": str(ip_address),
             "wireguard":
                 {
-                    "public_key": person.config.get("config.wireguard.public_range"),
+                    "public_key": person.config.get("config.wireguard.public_key"),
                     "ip_range": person.config.get("config.wireguard.ip_range"),
                     "endpoint": person.config.get("config.wireguard.endpoint")
                 },
@@ -77,8 +78,21 @@ class Client(WireguardConfigMixin):
 
         cls.generate_config(client_source_path, client_target_path, ctx)
 
-        apply_to_wireguard(peer_target_path, person.config)
+        interface = person.config.get("config.wireguard.interface")
+        apply_to_wireguard(peer_target_path, interface)
         return client
+
+    def delete(self):
+        log.info(f"Remove {self.public_key} from Wireguard")
+        remove_from_wireguard(self.public_key, self.person.config.get("config.wireguard.interface"))
+        peer_target_path = os.path.join(
+            self.person.config.get("config.peer_folder", mod="get_relative_path"), "{}.conf".format(self.filename))
+        client_target_path = os.path.join(
+            self.person.config.get("config.client_folder", mod="get_relative_path"), "{}.conf".format(self.filename))
+        os.remove(peer_target_path)
+        os.remove(client_target_path)
+        self.person.clients.remove(self)
+        self.person._save()
 
     @classmethod
     def find_available_ip(cls, network, occupied_ip_addresses):

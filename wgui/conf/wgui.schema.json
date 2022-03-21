@@ -34,6 +34,11 @@
           "default": "/etc/wgui/person.yml",
           "description": "File where the Person informations are Stored"
         },
+        "allow_signup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow initial Registration for new SAML authentificated users"
+        },
         "wireguard": {
           "type": "object",
           "properties": {

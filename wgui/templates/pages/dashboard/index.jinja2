@@ -5,9 +5,23 @@
 
     <div class="mt-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {% for client in person.clients %}
-                {% include "components/client_card.jinja2" %}
-            {% endfor %}
+
+
+            {% if person.clients|length >= 1 %}
+                {% for client in person.clients %}
+                    {% include "components/client_card.jinja2" %}
+                {% endfor %}
+            {% else %}
+                <div class="md:col-span-2 lg:col-span-3 h-full">
+                    <div class="text-center text-gray-600 py-16 md:py-32 lg:py-64 text-lg m-auto align-center justify-center">
+                        Oops,
+                        you have
+                        no
+                        Tunnels.
+                        <a href="{{ url_for("tunnel_create") }}">Click here to create one.</a>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
