@@ -29,7 +29,7 @@ class Configuration:
                     "reserved_ip": []
                 }
             },
-        "clients": {}
+        # "clients": {}
     }
 
     def __init__(self, options=None):

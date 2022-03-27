@@ -29,7 +29,7 @@ class ConfigQuestion:
         self.question = question
         self.validator = validator
         self.only_from_env = only_from_env
-        self.default = None
+        self.default = default
         self.value = None
 
     def get_value(self):
@@ -44,8 +44,10 @@ class ConfigQuestion:
         if os.environ.get(env_name) is not None:
             return os.environ.get(env_name)
 
-        while data == "" and retry <= 3:
-            raw_data = input(self.question).strip()
+        while (data == "" or data is None) and retry <= 3:
+            raw_data = input(f"{self.question} :").strip()
+            if raw_data == "":
+                raw_data = self.default
             try:
                 data = self.validator(raw_data)
             except ValidationError:
@@ -58,12 +60,14 @@ class ConfigQuestion:
 
 class ConfigurationInitializer:
 
+    DEFAULT_CONFIG_PATH = "/etc/wgui/wgui.yml"
+
     def __init__(self, parser, options):
         self._parser = parser
         self._options = options
 
-        if not os.path.exists(self._options.config):
-            self.create_config_yaml(self._options.config)
+        if self._options.config is None or not os.path.exists(self._options.config):
+            self.create_config_yaml()
 
         config = Configuration(self._options)
         self.initialize_config_files(config)
@@ -90,9 +94,12 @@ class ConfigurationInitializer:
             with pathlib.Path(config.get("config.peer_template", mod="get_relative_path")).open("w+") as fobj:
                 fobj.write(pkgutil.get_data("wgui", "sample/peer.tpl").decode('utf8'))
 
-    def create_config_yaml(self, config_file):
-        config_data = self.get_new_configuration_data()
-        with open(config_file, "w+") as fobj:
+    def create_config_yaml(self):
+        config_data, user_config = self.get_new_configuration_data()
+
+        config_path = pathlib.Path(user_config.get("config_prefix"))
+        config_path.mkdir(parents=True, exist_ok=True)
+        with config_path.joinpath("wgui.yml").open("w+") as fobj:
             yaml.dump(config_data, fobj)
 
     def get_new_configuration_data(self):
@@ -108,7 +115,7 @@ class ConfigurationInitializer:
                 str_validator(),
                 default="192.168.0.1,192.168.0.2,192.168.0.3,192.168.0.4,192.168.0.5"),
             ConfigQuestion(
-                "config_prefix", "Path Prefix where the wgui configuration should be stored", default="/etc/wgui/", only_from_env=True)
+                "config_prefix", "Path Prefix where the wgui configuration should be stored", str_validator(), default="/etc/wgui/", only_from_env=True)
         ]
 
         user_config = {}
@@ -135,4 +142,4 @@ class ConfigurationInitializer:
                     "person_file": "/etc/wgui/person.yml"
                 }
         }
-        return config_data
+        return config_data, user_config

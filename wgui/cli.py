@@ -92,13 +92,13 @@ class WgUiCommand:
             logging.debug("Enable Debug-Mode")
             logging.debug("Input Options {}".format(options.__dict__))
 
-        if options.config is None:
-            raise ValueError("--config is required")
-
         if options.initialize is True:
             ConfigurationInitializer(parser, options)
             log.info("Exit")
             sys.exit(0)
+
+        if options.config is None:
+            raise ValueError("--config is required")
 
         self.start(parser, options)
 
