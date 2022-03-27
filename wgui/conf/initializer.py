@@ -45,7 +45,7 @@ class ConfigQuestion:
             return os.environ.get(env_name)
 
         while (data == "" or data is None) and retry <= 3:
-            raw_data = input(f"{self.question} :").strip()
+            raw_data = input(f"{self.question} [{self.default}]: ").strip()
             if raw_data == "":
                 raw_data = self.default
             try:
