@@ -28,6 +28,12 @@ def deprecated(func):
 
 
 def login_required(func):
+    """
+        Decorator for flask which ensures only authentificated users allowd to open route
+
+        :param func: Flask route function
+        :return: wrapper
+    """
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
