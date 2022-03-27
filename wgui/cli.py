@@ -103,7 +103,7 @@ class WgUiCommand:
         self.start(parser, options)
 
     def start(self, parser, options):
-        config = Configuration(options)
+        config = Configuration(options.config)
 
         if options.cmd == "tunnel-create":
             log.error("This command is not available yet")

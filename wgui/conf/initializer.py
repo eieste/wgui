@@ -64,13 +64,12 @@ class ConfigurationInitializer:
 
     def __init__(self, parser, options):
         self._parser = parser
-        self._options = dict(options)
+        self._options = options
 
         if self._options.config is None or not os.path.exists(self._options.config):
             config_path = self.create_config_yaml()
-            self._options.update({"config": config_path})
 
-        config = Configuration(self._options)
+        config = Configuration(self._options.config or config_path)
         self.initialize_config_files(config)
 
     def initialize_config_files(self, config):

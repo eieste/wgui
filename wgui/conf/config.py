@@ -2,7 +2,6 @@
 import functools
 import json
 import logging
-import pathlib
 import pkgutil
 
 import jsonschema
@@ -32,10 +31,9 @@ class Configuration:
         # "clients": {}
     }
 
-    def __init__(self, options=None):
-        self._options = options
-        Configuration.validate(self._options.config)
-        self.configuration = Configuration.load_config(self._options.config)
+    def __init__(self, config_path=None):
+        Configuration.validate(config_path)
+        self.configuration = Configuration.load_config(config_path)
         self.helper = ConfigurationHelper(self)
 
     @staticmethod
@@ -109,9 +107,3 @@ class Configuration:
         if mod is not None:
             return getattr(self.helper, mod)(conf)
         return conf
-
-    @deprecated
-    def get_path_config(self, value):
-        p = pathlib.Path(self._options.config).parent.resolve().joinpath(value)
-        log.debug("Config-FilePath: {}".format(p))
-        return p
