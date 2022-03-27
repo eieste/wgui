@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
+
 import argparse
 import logging
 from pathlib import Path
 import re
 import sys
 
-from flask import Flask
-from werkzeug.middleware.proxy_fix import ProxyFix
-
 import wgui
 from wgui.conf.config import Configuration
 from wgui.conf.initializer import ConfigurationInitializer
-from wgui.utils.saml import apply_saml
-from wgui.utils.tunnel import Tunnel
-from wgui.utils.web import apply_routes
+from wgui.http.flask import app
+from wgui.http.web import apply_routes
+from wgui.http.web_essentials import apply_essential
+from wgui.saml.saml import apply_saml
 
 log = logging.getLogger(__name__)
 
@@ -48,9 +47,13 @@ class WgUiCommand:
         parser.add_argument("-i", "--initialize", action="store_true", help="Default Configuration initialize")
 
         submod = parser.add_subparsers(title="subcommands", dest="cmd")
-        tunnel_parser = submod.add_parser("tunnel-create")
-        tunnel_parser.add_argument("--email", type=Validator(r"^[^@]+@[^@]+\.[^@]+$"), required=True)
-        tunnel_parser.add_argument("--device", type=Validator(r"^[a-z0-9]+(?:-[a-z0-9]+)*$"), required=True)
+        tunnel_create_parser = submod.add_parser("tunnel-create")
+        tunnel_create_parser.add_argument("--email", type=Validator(r"^[^@]+@[^@]+\.[^@]+$"), required=True)
+        tunnel_create_parser.add_argument("--device", type=Validator(r"^[a-z0-9]+(?:-[a-z0-9]+)*$"), required=True)
+
+        tunnel_delete_parser = submod.add_parser("tunnel-delete")
+        tunnel_delete_parser.add_argument("--email", type=Validator(r"^[^@]+@[^@]+\.[^@]+$"), required=True)
+        tunnel_delete_parser.add_argument("--device", type=Validator(r"^[a-z0-9]+(?:-[a-z0-9]+)*$"), required=True)
 
         server_parser = submod.add_parser("server")
         server_parser.add_argument("--start", action="store_true", required=False)
@@ -103,18 +106,18 @@ class WgUiCommand:
         config = Configuration(options)
 
         if options.cmd == "tunnel-create":
-            t = Tunnel(config)
-            t.create(email=options.email, device=options.device)
-            # t.create(email=options)
+            log.error("This command is not available yet")
+
+        if options.cmd == "tunnel-delete":
+            log.error("This command is not available yet")
 
         if options.cmd == "server":
-            app = Flask(__name__)
-            app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
             app.config["SECRET_KEY"] = config.get("config.secret_key")
-            app.config["APP_URL"] = config.get("config.app_url")
+            app.config["wgui"] = config
+            app.config["CACHE_TYPE"] = "SimpleCache"
+            apply_essential(config, app)
             apply_saml(config, app)
             apply_routes(config, app)
-            # apply_own_saml(get_config, app)
             app.run(
                 debug=options.debug,
                 host=options.host,

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import functools
 import json
 import logging
 import pathlib
@@ -21,18 +22,24 @@ class Configuration:
                 "client_template": "/etc/wgui/client.tpl",
                 "peer_folder": "/etc/wireguard/peers",
                 "peer_template": "/etc/wgui/peer.tpl",
-                "reserved_ip": []
+                "person_file": "/etc/wgui/person.yml",
+                "allow_signup": True,
+                "wireguard": {
+                    "interface": "wg0",
+                    "reserved_ip": []
+                }
             },
         "clients": {}
     }
 
     def __init__(self, options=None):
         self._options = options
-        Configuration.validate(options.config)
-        self.configuration = Configuration.load_config(options.config)
+        Configuration.validate(self._options.config)
+        self.configuration = Configuration.load_config(self._options.config)
         self.helper = ConfigurationHelper(self)
 
     @staticmethod
+    @functools.lru_cache(maxsize=128)
     def get_config_schema():
         """
             Load Configuration JSON Schema
@@ -103,6 +110,7 @@ class Configuration:
             return getattr(self.helper, mod)(conf)
         return conf
 
+    @deprecated
     def get_path_config(self, value):
         p = pathlib.Path(self._options.config).parent.resolve().joinpath(value)
         log.debug("Config-FilePath: {}".format(p))

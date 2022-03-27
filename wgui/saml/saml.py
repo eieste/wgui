@@ -2,7 +2,7 @@
 
 from flask_saml2.utils import certificate_from_file, private_key_from_file
 
-from wgui.utils.saml_sp import sp
+from wgui.saml.saml_sp import sp
 
 
 def apply_saml(config, app):

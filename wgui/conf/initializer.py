@@ -9,8 +9,51 @@ import secrets
 import yaml
 
 from wgui.conf.config import Configuration
+from wgui.exceptions import ValidationError
 
 log = logging.getLogger(__name__)
+
+
+def str_validator():
+
+    def wrapper(value):
+        return str(value)
+
+    return wrapper
+
+
+class ConfigQuestion:
+
+    def __init__(self, slug, question, validator, default=None, only_from_env=False):
+        self.slug = slug
+        self.question = question
+        self.validator = validator
+        self.only_from_env = only_from_env
+        self.default = None
+        self.value = None
+
+    def get_value(self):
+        if self.value is None:
+            self.value = self.acquire_value()
+        return self.value
+
+    def acquire_value(self):
+        data = ""
+        retry = 0
+        env_name = "WGUI_" + self.slug.upper()
+        if os.environ.get(env_name) is not None:
+            return os.environ.get(env_name)
+
+        while data == "" and retry <= 3:
+            raw_data = input(self.question).strip()
+            try:
+                data = self.validator(raw_data)
+            except ValidationError:
+                log.info("Value {} cant be validated")
+            retry = retry + 1
+        if retry >= 3:
+            raise ValueError("too many invalid inputs")
+        return data
 
 
 class ConfigurationInitializer:
@@ -53,16 +96,24 @@ class ConfigurationInitializer:
             yaml.dump(config_data, fobj)
 
     def get_new_configuration_data(self):
-        question = {
-            "app_url": "URL of used for Webinterface: ",
-            "wg_endpoint": "Wireguard Endpoint domain (with port): ",
-            "wg_public_key": "Wireguard Server Public Key: ",
-            "wg_ip_range": "IP-Range used for Peers: ",
-            "reserved_ip": "Wireguard Gateway IP: "
-        }
+        config_option = [
+            ConfigQuestion("app_url", "URL of used for Webinterface", str_validator(), default="vpn.local"),
+            ConfigQuestion("wg_endpoint", "Wireguard Endpoint domain (with port)", str_validator(), default="vpn.local:58120"),
+            ConfigQuestion("wg_public_key", "Wireguard Server Public Key", str_validator()),
+            ConfigQuestion("wg_ip_range", "IP-Range used for Peers", str_validator(), default="192.168.0.0/24"),
+            ConfigQuestion("wg_interface", "Wireguard Interface", str_validator(), default="wg0"),
+            ConfigQuestion(
+                "wg_reserved_ip",
+                "Wireguard Gateway IP: ",
+                str_validator(),
+                default="192.168.0.1,192.168.0.2,192.168.0.3,192.168.0.4,192.168.0.5"),
+            ConfigQuestion(
+                "config_prefix", "Path Prefix where the wgui configuration should be stored", default="/etc/wgui/", only_from_env=True)
+        ]
+
         user_config = {}
-        for slug, prompt in question.items():
-            user_config[slug] = ConfigurationInitializer.user_input(prompt)
+        for option in config_option:
+            user_config[option.slug] = option.acquire_value()
 
         config_data = {
             "config":
@@ -71,7 +122,9 @@ class ConfigurationInitializer:
                         {
                             "endpoint": user_config.get("wg_endpoint"),
                             "ip_range": user_config.get("wg_ip_range"),
-                            "public_key": user_config.get("wg_public_key")
+                            "public_key": user_config.get("wg_public_key"),
+                            "reserved_ip": [user_config.get("wg_reserved_ip").split(",")],
+                            "interface": [user_config.get("wg_interface")]
                         },
                     "client_folder": "/etc/wireguard/clients",
                     "peer_folder": "/etc/wireguard/peers",
@@ -79,18 +132,7 @@ class ConfigurationInitializer:
                     "peer_template": "/etc/wgui/peer.tpl",
                     "secret_key": secrets.token_urlsafe(32),
                     "app_url": user_config.get("app_url"),
-                    "reserved_ip": [user_config.get("reserved_ip")]
+                    "person_file": "/etc/wgui/person.yml"
                 }
         }
         return config_data
-
-    @staticmethod
-    def user_input(prompt):
-        data = ""
-        retry = 0
-        while data == "" and retry <= 3:
-            data = input(prompt).strip()
-            retry = retry + 1
-        if retry >= 3:
-            raise ValueError("too many invalid inputs")
-        return data

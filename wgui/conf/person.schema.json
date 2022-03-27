@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://json-schema.org/draft/2019-09/schema",
+  "title": "WG-UI",
+  "description": "Wireguard UI Persons",
+  "type": "object",
+  "properties": {
+    "persons": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/person"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "person": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/device"
+          }
+        }
+      }
+    },
+    "device": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ip_address",
+        "filename"
+      ],
+      "properties": {
+        "device_name": {
+          "type": "string"
+        },
+        "ip_address": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "public_key": {
+          "type": "string"
+        },
+        "private_key": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

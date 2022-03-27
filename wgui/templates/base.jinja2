@@ -3,26 +3,27 @@
 {% block head_inner %}
     {{ super() }}
     <link rel="stylesheet" href="/static/css/tailwind.css"/>
+    <script defer src="/static/vendor/alpine.js"></script>
+    <script defer src="/static/js/avatar.js"/></script>
 {% endblock %}
 
 {% block body_inner %}
     {% include "components/flash.jinja2" %}
     <div>
-        <div class="flex h-screen bg-gray-200">
-            {#            <div :class="sidebarOpen ? 'block' : 'hidden'" @click="sidebarOpen = false"#}
-            {#                 class="fixed z-20 inset-0 bg-black opacity-50 transition-opacity lg:hidden"></div>#}
+        <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-200">
             {% include "components/sidebar.jinja2" %}
-
             <div class="flex-1 flex flex-col overflow-hidden">
-                {% include "components/header.jinja2" %}
+                {% block page_header_wrapper %}
+                    {% include "components/header.jinja2" %}
+                {% endblock %}
                 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
                     <div class="container mx-auto px-6 py-8">
                         {% block content_inner %}
                         {% endblock %}
                     </div>
                 </main>
+                {% include "components/footer.jinja2" %}
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="/static/js/backend.js"></script>
 {% endblock %}

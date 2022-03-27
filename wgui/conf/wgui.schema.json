@@ -29,9 +29,24 @@
           "default": "/etc/wireguard/peers/",
           "description": "Folder where the Peer configurations are stored"
         },
+        "person_file": {
+          "type": "string",
+          "default": "/etc/wgui/person.yml",
+          "description": "File where the Person informations are Stored"
+        },
+        "allow_signup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow initial Registration for new SAML authentificated users"
+        },
         "wireguard": {
           "type": "object",
           "properties": {
+            "interface": {
+              "type": "string",
+              "default": "wg0",
+              "description": "Wireguard Interface Name"
+            },
             "public_key": {
               "type": "string"
             },
@@ -40,6 +55,12 @@
             },
             "endpoint": {
               "type": "string"
+            },
+            "reserved_ip": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         },
@@ -100,56 +121,16 @@
         },
         "app_url": {
           "type": "string"
-        },
-        "reserved_ip": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       },
       "required": [
         "wireguard"
       ],
       "additionalProperties": false
-    },
-    "clients": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/client"
-      }
     }
   },
   "additionalProperties": false,
   "required": [
     "config"
-  ],
-  "$defs": {
-    "client": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "email",
-        "ip_address",
-        "filename"
-      ],
-      "properties": {
-        "device": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "ip_address": {
-          "type": "string"
-        },
-        "filename": {
-          "type": "string"
-        },
-        "public_key": {
-          "type": "string"
-        }
-      }
-    }
-  }
+  ]
 }
