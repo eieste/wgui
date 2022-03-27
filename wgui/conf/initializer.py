@@ -136,7 +136,7 @@ class ConfigurationInitializer:
                             "ip_range": user_config.get("wg_ip_range"),
                             "public_key": user_config.get("wg_public_key"),
                             "reserved_ip": [user_config.get("wg_reserved_ip").split(",")],
-                            "interface": [user_config.get("wg_interface")]
+                            "interface": user_config.get("wg_interface")
                         },
                     "client_folder": "/etc/wireguard/clients",
                     "peer_folder": "/etc/wireguard/peers",
