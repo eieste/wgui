@@ -2,6 +2,9 @@
 Configuration
 =============
 
+.. contents::
+   :depth: 2
+
 Example
 =======
 
@@ -26,7 +29,7 @@ Example
        saml:
          saml_key: string
          saml_crt: string
-         id_providers: string
+         id_providers:
            - display_name: string
              button_style: string
              slug: string
@@ -38,7 +41,15 @@ Example
 
 config.client_template
 ======================
++--------------------+---------------------------------------------------------+
+| **Datatype**       | string                                                  |
++--------------------+---------------------------------------------------------+
+| **Type**           | Path                                                    |
++--------------------+---------------------------------------------------------+
+| **Default**        | /etc/wgui/config.tpl                                    |
++--------------------+---------------------------------------------------------+
+| **Path**           | config.client_template                                  |
++--------------------+---------------------------------------------------------+
+**Description:**
 
-Type: string
-Default: "/etc/wgui/client.tpl"
-Description:
+Defines

@@ -7,5 +7,9 @@ Admins
    :maxdepth: 2
    :caption: Contents:
 
+   ./wg-install
+   ./wgui-install
    ./config
-   ./install
+   ./template
+   ./template-ctx
+   ./person
