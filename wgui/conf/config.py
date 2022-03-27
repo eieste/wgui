@@ -2,6 +2,7 @@
 import functools
 import json
 import logging
+import pathlib
 import pkgutil
 
 import jsonschema
@@ -35,6 +36,7 @@ class Configuration:
         Configuration.validate(config_path)
         self.configuration = Configuration.load_config(config_path)
         self.helper = ConfigurationHelper(self)
+        self.config_path = pathlib.Path(config_path)
 
     @staticmethod
     @functools.lru_cache(maxsize=128)
