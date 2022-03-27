@@ -177,10 +177,20 @@ jobs:
     runs-on: "ubuntu-latest"
     if: github.ref == 'refs/heads/master'
     steps:
+      - name: "Checkout repository code"
+        uses: "actions/checkout@v2"
+
       - name: "Install SemanticRelease"
         run: |
           npm install semantic-release @semantic-release/changelog @semantic-release/exec @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/changelog @semantic-release/git 
           npx semantic-release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: version-artifacts
+          path: |
+            setup.py
+            docs/source/conf.py
+            wgui/__init__.py
 
   pkg-pypi:
     needs:
@@ -190,7 +200,9 @@ jobs:
     steps:
       - name: "Checkout repository code"
         uses: "actions/checkout@v2"
-
+      - uses: "actions/download-artifact@v2"
+        with:
+          name: "version-artifacts"
       - name: "Setup Python"
         uses: "actions/setup-python@v2"
         with:
@@ -236,6 +248,10 @@ jobs:
       - name: "Checkout repository code"
         uses: "actions/checkout@v2"
 
+      - uses: "actions/download-artifact@v2"
+        with:
+          name: "version-artifacts"
+          
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 

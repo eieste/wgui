@@ -50,6 +50,7 @@ ToDo
    :caption: Contents:
 
    ./developer/index
+   ./admin/index
 
 
 Indices and tables
