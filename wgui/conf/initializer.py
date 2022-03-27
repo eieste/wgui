@@ -64,10 +64,11 @@ class ConfigurationInitializer:
 
     def __init__(self, parser, options):
         self._parser = parser
-        self._options = options
+        self._options = dict(options)
 
         if self._options.config is None or not os.path.exists(self._options.config):
-            self.create_config_yaml()
+            config_path = self.create_config_yaml()
+            self._options.update({"config": config_path})
 
         config = Configuration(self._options)
         self.initialize_config_files(config)
@@ -101,6 +102,7 @@ class ConfigurationInitializer:
         config_path.mkdir(parents=True, exist_ok=True)
         with config_path.joinpath("wgui.yml").open("w+") as fobj:
             yaml.dump(config_data, fobj)
+        return config_path.joinpath("wgui.yml").as_posix()
 
     def get_new_configuration_data(self):
         config_option = [
@@ -115,7 +117,11 @@ class ConfigurationInitializer:
                 str_validator(),
                 default="192.168.0.1,192.168.0.2,192.168.0.3,192.168.0.4,192.168.0.5"),
             ConfigQuestion(
-                "config_prefix", "Path Prefix where the wgui configuration should be stored", str_validator(), default="/etc/wgui/", only_from_env=True)
+                "config_prefix",
+                "Path Prefix where the wgui configuration should be stored",
+                str_validator(),
+                default="/etc/wgui/",
+                only_from_env=True)
         ]
 
         user_config = {}
