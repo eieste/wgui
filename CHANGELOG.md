@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/eieste/wgui/compare/v1.0.2...v1.0.3) (2022-03-27)
+
+
+### Bug Fixes
+
+* **ci:** Try to fix ci ([876e852](https://github.com/eieste/wgui/commit/876e85238604de7b2b2e40be45ca29394aa31bfa))
+
 ## [1.0.2](https://github.com/eieste/wgui/compare/v1.0.1...v1.0.2) (2022-03-27)
 
 
