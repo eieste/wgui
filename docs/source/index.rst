@@ -49,6 +49,7 @@ ToDo
    :maxdepth: 2
    :caption: Contents:
 
+   ./developer/index
 
 
 Indices and tables
