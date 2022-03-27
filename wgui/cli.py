@@ -13,7 +13,6 @@ from wgui.http.flask import app
 from wgui.http.web import apply_routes
 from wgui.http.web_essentials import apply_essential
 from wgui.saml.saml import apply_saml
-from wgui.utils.tunnel import Tunnel
 
 log = logging.getLogger(__name__)
 
@@ -48,9 +47,13 @@ class WgUiCommand:
         parser.add_argument("-i", "--initialize", action="store_true", help="Default Configuration initialize")
 
         submod = parser.add_subparsers(title="subcommands", dest="cmd")
-        tunnel_parser = submod.add_parser("tunnel-create")
-        tunnel_parser.add_argument("--email", type=Validator(r"^[^@]+@[^@]+\.[^@]+$"), required=True)
-        tunnel_parser.add_argument("--device", type=Validator(r"^[a-z0-9]+(?:-[a-z0-9]+)*$"), required=True)
+        tunnel_create_parser = submod.add_parser("tunnel-create")
+        tunnel_create_parser.add_argument("--email", type=Validator(r"^[^@]+@[^@]+\.[^@]+$"), required=True)
+        tunnel_create_parser.add_argument("--device", type=Validator(r"^[a-z0-9]+(?:-[a-z0-9]+)*$"), required=True)
+
+        tunnel_delete_parser = submod.add_parser("tunnel-delete")
+        tunnel_delete_parser.add_argument("--email", type=Validator(r"^[^@]+@[^@]+\.[^@]+$"), required=True)
+        tunnel_delete_parser.add_argument("--device", type=Validator(r"^[a-z0-9]+(?:-[a-z0-9]+)*$"), required=True)
 
         server_parser = submod.add_parser("server")
         server_parser.add_argument("--start", action="store_true", required=False)
@@ -103,9 +106,10 @@ class WgUiCommand:
         config = Configuration(options)
 
         if options.cmd == "tunnel-create":
-            t = Tunnel(config)
-            t.create(email=options.email, device=options.device)
-            # t.create(email=options)
+            log.error("This command is not available yet")
+
+        if options.cmd == "tunnel-delete":
+            log.error("This command is not available yet")
 
         if options.cmd == "server":
             app.config["SECRET_KEY"] = config.get("config.secret_key")
