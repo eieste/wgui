@@ -168,7 +168,7 @@ jobs:
         run: |
           wgui -v
 
-  pkg-pypi:
+  semver:
     needs:
       - test-precommit
       - test-codecov
@@ -177,18 +177,19 @@ jobs:
     runs-on: "ubuntu-latest"
     if: github.ref == 'refs/heads/master'
     steps:
-      - name: "Checkout repository code"
-        uses: "actions/checkout@v2"
-
-      - name: "Setup Nodejs"
-        uses: "actions/setup-node@v2"
-        with:
-          node-version: '16'
-
       - name: "Install SemanticRelease"
         run: |
           npm install semantic-release @semantic-release/changelog @semantic-release/exec @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/changelog @semantic-release/git 
           npx semantic-release
+
+  pkg-pypi:
+    needs:
+      - semver
+    runs-on: "ubuntu-latest"
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: "Checkout repository code"
+        uses: "actions/checkout@v2"
 
       - name: "Setup Python"
         uses: "actions/setup-python@v2"
@@ -225,5 +226,30 @@ jobs:
           --repository-url ${{ secrets.TWINE_REPOSITORY_URL }} \
           --username ${{ secrets.TWINE_USERNAME }} \
           --password ${{ secrets.TWINE_PASSWORD }} dist/*
-          
 
+  docker:
+    needs:
+      - semver
+    runs-on: "ubuntu-latest"
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: "Checkout repository code"
+        uses: "actions/checkout@v2"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: eieste/wgui:latest
