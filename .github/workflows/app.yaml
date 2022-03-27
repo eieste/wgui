@@ -217,7 +217,7 @@ jobs:
       - name: "Compile Tailwind"
         run: |
           curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x86 -o /usr/local/bin/tailwindcss
-          chmod +x tailwindcss
+          chmod +x /usr/local/bin/tailwindcss
           make build
 
       - name: "Install Packages"
