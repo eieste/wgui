@@ -124,7 +124,8 @@
         }
       },
       "required": [
-        "wireguard"
+        "wireguard",
+        "app_url"
       ],
       "additionalProperties": false
     }
