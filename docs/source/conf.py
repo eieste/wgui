@@ -54,7 +54,9 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
-                       'jinja2': ('https://jinja.palletsprojects.com/en/3.1.x/', None)}
+                       'jinja2': ('https://jinja.palletsprojects.com/en/3.1.x/', None),
+                       'jinja': ('https://jinja.palletsprojects.com/en/3.1.x/', None),
+                       'flask': ('https://flask.palletsprojects.com/en/2.0.x/', None)}
 extlinks = {
     "ghr": (
         "https://github.com/eieste/wgui/tree/master/%s", "%s")
