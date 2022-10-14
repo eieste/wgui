@@ -100,7 +100,7 @@ class WgUiCommand:
             log.info("Exit")
             sys.exit(0)
 
-        self.start(parser, options)
+        return self.start(parser, options)
 
     def start(self, parser, options):
         config = Configuration(options)
@@ -118,17 +118,19 @@ class WgUiCommand:
             apply_essential(config, app)
             apply_saml(config, app)
             apply_routes(config, app)
-            app.run(
-                debug=options.debug,
-                host=options.host,
-                port=options.port,
-            )
+            if options.start:
+                app.run(
+                    debug=options.debug,
+                    host=options.host,
+                    port=options.port,
+                )
+            return app
 
 
 def main():
     parser = WgUiCommand()
     options = parser.parse()
-    parser.handle(parser.get_parser(), options)
+    return parser.handle(parser.get_parser(), options)
 
 
 if __name__ == "__main__":
