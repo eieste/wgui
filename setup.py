@@ -20,7 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires=[
-        "jsonschema==4.4.0", "qrcode==7.3.1", "pyyaml==6.0", "Jinja2==3.0.3", "flask==2.0.2", "Flask-WTF==1.0.0",
+        "jsonschema==4.4.0", "qrcode==7.3.1", "pyyaml==6.0", "Jinja2==3.0.3", "flask==2.3.2", "Flask-WTF==1.0.0",
         "flask-saml2@git+https://github.com/eieste/flask-saml2.git@0.4.0#egg=flask-saml2", "flask-caching==1.10.1"
     ],
     package_data={
